@@ -27,17 +27,18 @@ export class DestinationService {
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
-  get(): Observable<Destination[]> {
+  get(): Promise<Destination[]> {
     return this.http.get(Config.API + '/destination', this.options)
-      .map((res: Response) => res.json())
-      .catch(this.handleError);
+      .toPromise()
+      .then((res: Response) => res.json());
+    // .catch(this.handleError);
   }
 
   getDestination(id: number): Promise<Destination> {
     return this.http.get(Config.API + `/destination/${id}`, this.options)
       .toPromise()
-      .then((res: Response) => res.json())
-      .catch(this.handleError);
+      .then((res: Response) => res.json());
+      // .catch(this.handleError);
   }
 
   create(destination: Destination): Promise<Response> {
@@ -45,8 +46,8 @@ export class DestinationService {
     delete destination.url;
     return this.http.post(Config.API + '/destination', JSON.stringify(destination), this.options)
       // .map((res: Response) => res.json())
-      .toPromise()
-      .catch(this.handleError);
+      .toPromise();
+      // .catch(this.handleError);
   }
 
   update(destination: Destination): Promise<Response> {
@@ -61,9 +62,9 @@ export class DestinationService {
 
   remove(id: number): Promise<Response> {
     return this.http.delete(Config.API + `/destination/${id}`, this.options)
-      .toPromise()
+      .toPromise();
       // .then((res: Response) => res.json())
-      .catch(this.handleError);
+      // .catch(this.handleError);
   }
 
   /**

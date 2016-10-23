@@ -26,7 +26,8 @@ export class DestinationDetailComponent implements OnInit {
     this.route.params.forEach((params: Params) => {
       let id = +params['id']; // + konvertuje string na number
       this.destinationService.getDestination(id)
-        .then(destination => this.selectedDestination = destination);
+        .then(destination => this.selectedDestination = destination)
+        .catch(this.back.bind(this));
     })
   }
 

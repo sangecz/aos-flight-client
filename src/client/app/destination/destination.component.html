@@ -1,6 +1,6 @@
 <h2>Add destination</h2>
 <destination-form [destination]="selectedDestination" (onDestinationChange)="addDestination($event)"></destination-form>
-{{errorMessage}}
+<span class="error">{{errorMessage}}</span>
 <h2>Destination list</h2>
 <table>
   <tr>

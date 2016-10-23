@@ -33,16 +33,17 @@ export class DestinationComponent implements OnInit {
 
   getDestinations() {
     this.destinationService.get()
-      .subscribe(
-        destinations => this.destinations = destinations,
-        error =>  this.errorMessage = <any>error
-      );
+      .then(destinations => this.destinations = destinations)
+      .catch(error => this.errorMessage = <any>error);
   }
 
   addDestination(destination: Destination)  {
     this.destinationService.create(destination)
       .then(this.getDestinations.bind(this))
-      .catch(err => this.errorMessage = <any>err);
+      .catch(err => {
+        this.errorMessage = <any>err;
+        setTimeout(() => this.errorMessage = '', 1000);
+      });
 
   }
 
