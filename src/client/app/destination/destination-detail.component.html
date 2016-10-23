@@ -1,0 +1,11 @@
+<h1>Edit destination</h1>
+
+<destination-form
+  [destination]="selectedDestination"
+  [isDetail]="true"
+  (onDestinationChange)="saveDestination($event)"
+  (onRemove)="removeDestination($event)"
+  (onBack)="back($event)"
+>
+
+</destination-form>

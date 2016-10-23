@@ -1,0 +1,17 @@
+:disabled {
+  background-color: #8f8f8f;
+}
+
+.error {
+  color: red;
+  font-size: 0.8em;
+}
+
+input[type="text"], input[type="number"]{
+  float: right;
+}
+
+td {
+  width: 330px;
+}
+

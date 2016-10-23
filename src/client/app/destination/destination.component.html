@@ -1,0 +1,16 @@
+<h2>Add destination</h2>
+<destination-form [destination]="selectedDestination" (onDestinationChange)="addDestination($event)"></destination-form>
+{{errorMessage}}
+<h2>Destination list</h2>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Latitude</th>
+    <th>Longitude</th>
+  </tr>
+  <tr *ngFor="let destination of destinations" (click)="selectDestination(destination)">
+    <td>{{destination.name}}</td>
+    <td>{{destination.lat}}</td>
+    <td>{{destination.lon}}</td>
+  </tr>
+</table>

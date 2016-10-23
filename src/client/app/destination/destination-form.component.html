@@ -1,0 +1,51 @@
+<form novalidate (ngSubmit)="onSubmit()" [formGroup]="destinationFG">
+
+  <table>
+    <tr>
+      <td>
+        <label>
+          <span>Name</span>
+          <input type="text" formControlName="name">
+        </label>
+        <div class="error" *ngIf="destinationFG.get('name').hasError('required') && destinationFG.get('name').touched">
+          Name is required
+        </div>
+        <div class="error" *ngIf="destinationFG.get('name').hasError('minlength') && destinationFG.get('name').touched">
+          Minimum of 3 characters
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>
+          <span>Latitude</span>
+          <input type="number" formControlName="lat">
+        </label>
+        <div class="error" *ngIf="destinationFG.get('lat').hasError('required') && destinationFG.get('lat').touched">
+          Latitude is required
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>
+          <span>Longitude</span>
+          <input type="number" formControlName="lon">
+        </label>
+        <div class="error" *ngIf="destinationFG.get('lon').hasError('required') && destinationFG.get('lon').touched">
+          Longitude is required
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <button type="submit" [disabled]="destinationFG.invalid">Save</button>
+        <button *ngIf="detail" type="button" (click)="remove()">Delete</button>
+        <button *ngIf="detail" type="button" (click)="back()">Back</button>
+      </td>
+    <tr>
+  </table>
+</form>

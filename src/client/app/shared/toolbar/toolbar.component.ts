@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { Config } from './../../shared/index';
+
 /**
  * This class represents the toolbar component.
  */
@@ -10,5 +12,12 @@ import { Component } from '@angular/core';
   styleUrls: ['toolbar.component.css']
 })
 
-export class ToolbarComponent {}
+export class ToolbarComponent {
+
+  appTitle: string;
+
+  constructor(){
+    this.appTitle = Config.APP_TITLE;
+  }
+}
 
