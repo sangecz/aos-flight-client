@@ -1,0 +1,44 @@
+<h2>Add flight</h2>
+<flight-form [flight]="selectedFlight" (onFlightChange)="addFlight($event)"></flight-form>
+<span class="error">{{errorMessage}}</span>
+<h2>Flight list</h2>
+
+<!--TODO*: datepicker-->
+<!--TODO*: oddelit filter do komponenty-->
+<!--TODO*: oddelit strankovani do komponenty-->
+<!--TODO: strankovani (base=kolik, offset=kolik preskoc)-->
+
+<div>
+  <h3>Departure filter</h3>
+  <label>
+    <span>From</span>
+    <input type="text" [(ngModel)]="filter.from" />
+  </label>
+  <label>
+    <span>To</span>
+    <input type="text" [(ngModel)]="filter.to" />
+  </label>
+  <button type="button" (click)="clearFilter()">Clear</button>
+  <button type="button" (click)="getFlights()">Apply</button>
+</div>
+
+<table>
+  <tr>
+    <th (click)="changeSort(nameField)" [ngClass]="getSortClass(nameField)">Name</th>
+    <th (click)="changeSort(departureField)" [ngClass]="[getSortClass(departureField), getFilterClass()]">Departure</th>
+    <th>Distance</th>
+    <th>Seats</th>
+    <th>Price</th>
+    <th>From</th>
+    <th>To</th>
+  </tr>
+  <tr *ngFor="let flight of flights" (click)="selectFlight(flight)">
+    <td>{{flight.name}}</td>
+    <td>{{flight.dateOfDeparture | date:'medium'}}</td>
+    <td>{{flight.distance}}</td>
+    <td>{{flight.seats}}</td>
+    <td>{{flight.price}}</td>
+    <td>{{flight.from}}</td>
+    <td>{{flight.to}}</td>
+  </tr>
+</table>

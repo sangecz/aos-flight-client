@@ -1,0 +1,11 @@
+<h2>Edit flight</h2>
+
+<flight-form
+  [flight]="selectedFlight"
+  [isDetail]="true"
+  (onFlightChange)="saveFlight($event)"
+  (onRemove)="removeFlight($event)"
+  (onBack)="back($event)"
+>
+
+</flight-form>

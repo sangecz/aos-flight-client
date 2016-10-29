@@ -3,15 +3,16 @@ import {Http, Response, RequestOptions, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/observable/throw';
+import {Config} from "../config/env.config";
 import 'rxjs/add/operator/toPromise';
+import {reservationStates} from "../../reservation/reservation-states";
 import {CONSTANTS} from "../config/app.constants";
-import {Sort} from "../util/sort";
 
-const endpoint = 'destinations';
-const apiUrl = '/api';
+const endpoint = 'reservations';
+const apiUrl = '/app';
 
 @Injectable()
-export class DestinationService {
+export class ReservationService {
 
   options: RequestOptions;
 
@@ -19,37 +20,35 @@ export class DestinationService {
     this.options = new RequestOptions({headers: this.createHeaders()});
   }
 
-  /**
-   * @param sort 1 == asc ... -1 == desc
-   */
-  getAll(sort: Sort): Promise<Destination[]> {
-    if(sort && sort.order) {
-      this.options.headers.append(CONSTANTS.headers.xOrder, `${sort.field}:${sort.order}`);
-    }
-
+  getAll(): Promise<Reservation[]> {
     return this.http.get(`${apiUrl}/${endpoint}`, this.options)
       .toPromise()
       .then((res: Response) => res.json().data);
-
   }
 
-  getOne(id: number): Promise<Destination> {
+  // TODO pridat hlavicku: X-Password, jak se user dozvi id pro zobrazeni, kdyz nemuze listovat?
+  getOne(id: number): Promise<Reservation> {
     return this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options)
       .toPromise()
       .then((res: Response) => res.json().data);
   }
 
-  create(destination: Destination): Promise<Response> {
-    this.deleteProperties(destination);
-    return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(destination), this.options)
+  create(reservation: Reservation): Promise<Response> {
+    this.deleteProperties(reservation);
+    delete reservation.state; // na serveru prirazen stav NEW
+    return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(reservation), this.options)
       .toPromise();
   }
 
-  update(destination: Destination): Promise<Response> {
-    const id = destination.id;
-    this.deleteProperties(destination);
+  update(reservation: Reservation): Promise<Response> {
+    const id = reservation.id;
+    const password: string = reservation.password;
+    this.deleteProperties(reservation);
+    reservation.state = reservationStates.CANCELED;
 
-    return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(destination), this.options)
+    this.options.headers.append(CONSTANTS.headers.xPassword, password);
+
+    return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(reservation), this.options)
       .toPromise()
   }
 
@@ -58,11 +57,21 @@ export class DestinationService {
       .toPromise();
   }
 
-  private deleteProperties(destination: Destination) {
-    delete destination.id;
-    delete destination.url;
+  pay(id: number): Promise<Response> {
+    return this.http.post(`${apiUrl}/${endpoint}/${id}/payment`, JSON.stringify({cardNumber: 1234567812345678}), this.options)
+      .toPromise();
   }
 
+  private deleteProperties(reservation: Reservation) {
+    delete reservation.id;
+    delete reservation.url;
+    delete reservation.created;
+    delete reservation.password;
+  }
+
+  /**
+   * Handle HTTP error
+   */
   private handleError(error: any) {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to getAll a better message

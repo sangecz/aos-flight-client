@@ -1,17 +1,19 @@
 import {Injectable} from '@angular/core';
 import {Http, Response, RequestOptions, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/toPromise';
-import {CONSTANTS} from "../config/app.constants";
-import {Sort} from "../util/sort";
 
-const endpoint = 'destinations';
+import {CONSTANTS} from "../config/app.constants";
+import {Pagination, DepartureFilter, Sort} from "../util";
+
+const endpoint = 'flights';
 const apiUrl = '/api';
 
+//TODO strankovani hlavickami: X-Base: 10 X-Offset: 20
+
 @Injectable()
-export class DestinationService {
+export class FlightService {
 
   options: RequestOptions;
 
@@ -20,12 +22,23 @@ export class DestinationService {
   }
 
   /**
-   * @param sort 1 == asc ... -1 == desc
+   * @param sort.order 1 == asc ... -1 == desc
    */
-  getAll(sort: Sort): Promise<Destination[]> {
+  getAll(sort: Sort, filter: DepartureFilter, pagination: Pagination): Promise<Flight[]> {
     if(sort && sort.order) {
       this.options.headers.append(CONSTANTS.headers.xOrder, `${sort.field}:${sort.order}`);
     }
+
+    if(filter && filter.from && filter.to) {
+      this.options.headers.append(CONSTANTS.headers.xFilter, `dateOfDepartureFrom=${filter.from},dateOfDepartureTo=${filter.to}`);
+    }
+
+    if(pagination && pagination.base && pagination.offset) {
+      this.options.headers.append(CONSTANTS.headers.xBase, pagination.base + '');
+      this.options.headers.append(CONSTANTS.headers.xOffset, pagination.offset + '');
+    }
+
+    console.log(pagination);
 
     return this.http.get(`${apiUrl}/${endpoint}`, this.options)
       .toPromise()
@@ -33,23 +46,23 @@ export class DestinationService {
 
   }
 
-  getOne(id: number): Promise<Destination> {
+  getOne(id: number): Promise<Flight> {
     return this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options)
       .toPromise()
       .then((res: Response) => res.json().data);
   }
 
-  create(destination: Destination): Promise<Response> {
-    this.deleteProperties(destination);
-    return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(destination), this.options)
+  create(flight: Flight): Promise<Response> {
+    this.deleteProperties(flight);
+    return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(flight), this.options)
       .toPromise();
   }
 
-  update(destination: Destination): Promise<Response> {
-    const id = destination.id;
-    this.deleteProperties(destination);
+  update(flight: Flight): Promise<Response> {
+    const id = flight.id;
+    this.deleteProperties(flight);
 
-    return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(destination), this.options)
+    return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(flight), this.options)
       .toPromise()
   }
 
@@ -58,9 +71,11 @@ export class DestinationService {
       .toPromise();
   }
 
-  private deleteProperties(destination: Destination) {
-    delete destination.id;
-    delete destination.url;
+  private deleteProperties(flight: Flight) {
+    delete flight.id; // FIXME posilat pouze, kdyz je zaroven vytvorena destination
+    delete flight.url;
+    delete flight.distance;
+    delete flight.price;
   }
 
   private handleError(error: any) {

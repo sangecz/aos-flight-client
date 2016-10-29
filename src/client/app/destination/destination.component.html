@@ -4,7 +4,7 @@
 <h2>Destination list</h2>
 <table>
   <tr>
-    <th>Name</th>
+    <th (click)="changeSort()" [ngClass]="getSortClass()">Name</th>
     <th>Latitude</th>
     <th>Longitude</th>
   </tr>

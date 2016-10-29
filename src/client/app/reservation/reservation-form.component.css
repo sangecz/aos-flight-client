@@ -1,8 +1,3 @@
-:host {
-  display: block;
-  padding: 0 16px;
-}
-
 :disabled {
   background-color: #8f8f8f;
 }
@@ -12,8 +7,9 @@
   font-size: 0.8em;
 }
 
-input[type="text"], input[type="number"]{
+input[type="text"], input[type="number"], input[type="password"]{
   float: right;
+  width: 210px;
 }
 
 td {

@@ -61,3 +61,23 @@ button {
 button:hover {
   background-color: #28739e;
 }
+
+.error {
+  color: red;
+}
+
+input:disabled {
+  background-color: #e1e1e1 !important;
+}
+
+.asc:after {
+  content: " \25b2";
+}
+
+.desc:after {
+  content: " \25bc";
+}
+
+.cross:before {
+  content: "\2716  ";
+}

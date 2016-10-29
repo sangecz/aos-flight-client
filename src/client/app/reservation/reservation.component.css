@@ -24,4 +24,3 @@ tr:not(:first-child):hover {
 tr:nth-child(odd) {
   background-color: #efefef;
 }
-

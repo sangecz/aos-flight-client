@@ -1,0 +1,20 @@
+<h2>Add reservation</h2>
+<reservation-form [reservation]="selectedReservation" (onReservationChange)="addReservation($event)"></reservation-form>
+<span class="error">{{errorMessage}}</span>
+<h2>Reservation list</h2>
+<table>
+  <tr>
+    <th>Flight</th>
+    <th>Seats</th>
+    <th>Created</th>
+    <th>Password</th>
+    <th>State</th>
+  </tr>
+  <tr *ngFor="let reservation of reservations" (click)="selectReservation(reservation)">
+    <td>{{reservation.flight}}</td>
+    <td>{{reservation.seats}}</td>
+    <td>{{reservation.created | date:'medium'}}</td>
+    <td>{{reservation.password}}</td>
+    <td>{{reservation.state}}</td>
+  </tr>
+</table>
