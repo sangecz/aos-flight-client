@@ -3,11 +3,6 @@
 <span class="error">{{errorMessage}}</span>
 <h2>Flight list</h2>
 
-<!--TODO*: datepicker-->
-<!--TODO*: oddelit filter do komponenty-->
-<!--TODO*: oddelit strankovani do komponenty-->
-<!--TODO: strankovani (base=kolik, offset=kolik preskoc)-->
-
 <div>
   <h3>Departure filter</h3>
   <label>
@@ -21,6 +16,11 @@
   <button type="button" (click)="clearFilter()">Clear</button>
   <button type="button" (click)="getFlights()">Apply</button>
 </div>
+
+<pagination
+  [recordCount]="recordCount"
+  (onPaginationChange)="paginationChanged($event)">
+</pagination>
 
 <table>
   <tr>

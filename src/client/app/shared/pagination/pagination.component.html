@@ -1,0 +1,7 @@
+<div class="pagination">
+  <button [disabled]="isAtFirstPage()" (click)="prevPage()"><</button>
+  <select name="service" [ngModel]="pagination.base" (ngModelChange)="paginationBaseChanged($event)">
+    <option *ngFor="let base of bases" [ngValue]="base">{{base}}</option>
+  </select>
+  <button [disabled]="isAtLastPage()" (click)="nextPage()">></button>
+</div>

@@ -10,8 +10,6 @@ import {Pagination, DepartureFilter, Sort} from "../util";
 const endpoint = 'flights';
 const apiUrl = '/api';
 
-//TODO strankovani hlavickami: X-Base: 10 X-Offset: 20
-
 @Injectable()
 export class FlightService {
 
@@ -24,7 +22,7 @@ export class FlightService {
   /**
    * @param sort.order 1 == asc ... -1 == desc
    */
-  getAll(sort: Sort, filter: DepartureFilter, pagination: Pagination): Promise<Flight[]> {
+  getAll(sort: Sort, filter: DepartureFilter, pagination: Pagination): Promise<[Flight[], number]> {
     if(sort && sort.order) {
       this.options.headers.append(CONSTANTS.headers.xOrder, `${sort.field}:${sort.order}`);
     }
@@ -38,11 +36,13 @@ export class FlightService {
       this.options.headers.append(CONSTANTS.headers.xOffset, pagination.offset + '');
     }
 
-    console.log(pagination);
+    const totalCount = 13;
 
     return this.http.get(`${apiUrl}/${endpoint}`, this.options)
       .toPromise()
-      .then((res: Response) => res.json().data);
+      .then((res: Response) => {
+        return [res.json().data, totalCount];
+      });
 
   }
 

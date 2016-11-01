@@ -7,7 +7,6 @@ import {DepartureFilter} from "../shared/util/filter";
 import {Pagination} from "../shared/util/pagination";
 
 const emptyFilter: DepartureFilter = {from: '', to: ''};
-const initPagination: Pagination = {base: 10, offset: 0};
 
 @Component({
   moduleId: module.id,
@@ -32,7 +31,8 @@ export class FlightComponent implements OnInit {
   selectedSortField = this.departureField;
 
   filter: DepartureFilter = emptyFilter;
-  pagination: Pagination = initPagination;
+  pagination: Pagination;
+  recordCount = 0;
 
   errorMessage: string;
   flights: any[] = [];
@@ -62,7 +62,10 @@ export class FlightComponent implements OnInit {
   getFlights() {
     const sort = this.sortService.getSortFor(this.selectedSortField);
     this.flightService.getAll(sort, this.filter, this.pagination)
-      .then(flights => this.flights = flights)
+      .then((res) => {
+        this.flights = res[0];
+        this.recordCount = res[1];
+      })
       .catch(error => this.errorMessage = <any>error);
   }
 
@@ -97,12 +100,18 @@ export class FlightComponent implements OnInit {
   }
 
   getFilterClass(): string {
-    return this.filter.from && this.filter.to ? 'cross' : '';
+    return this.filter && this.filter.from && this.filter.to ? 'cross' : '';
+  }
+
+  paginationChanged(pagination: Pagination){
+    this.pagination = pagination;
+    this.getFlights();
   }
 
   clearFilter(){
     this.filter.from = '';
     this.filter.to = '';
+    this.getFlights();
   }
 
 }

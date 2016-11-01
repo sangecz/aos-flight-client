@@ -35,6 +35,119 @@ export let flights = [
     from: 2,
     to: 1,
     url: '/flight/3'
+  },
+
+  {
+    id: 4,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 5,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 6,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 7,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 8,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 9,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 10,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 11,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 12,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
+  },
+  {
+    id: 13,
+    dateOfDeparture: '2016-12-21T11:30:00.000Z',
+    distance: 1035.51,
+    price: 7435,
+    seats: 160,
+    name: 'eu travel Prg > Lon',
+    from: 2,
+    to: 1,
+    url: '/flight/3'
   }
+
+
 
 ];
