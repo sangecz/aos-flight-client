@@ -11,7 +11,7 @@
     <th>State</th>
   </tr>
   <tr *ngFor="let reservation of reservations" (click)="selectReservation(reservation)">
-    <td>{{reservation.flight}}</td>
+    <td>{{reservation.flightName}}</td>
     <td>{{reservation.seats}}</td>
     <td>{{reservation.created | date:'medium'}}</td>
     <td>{{reservation.password}}</td>

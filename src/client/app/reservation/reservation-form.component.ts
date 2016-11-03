@@ -28,7 +28,7 @@ export class ReservationFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.reservationFG = this.fb.group({
-      flight: ['', [Validators.required]],
+      flightName: ['', [Validators.required]],
       seats: ['', [Validators.required]],
       created: ['', []],
       state: ['', []],
@@ -45,9 +45,9 @@ export class ReservationFormComponent implements OnInit {
   set reservation(val: Reservation) {
     this.reservationValue = val;
 
-    if (val && val.flight && val.seats && val.created && val.state) {
+    if (val && val.flightName && val.seats && val.created && val.state) {
       this.reservationFG.setValue({
-        flight: val.flight,
+        flightName: val.flightName,
         seats: val.seats,
         created: val.created,
         state: val.state,
@@ -65,7 +65,7 @@ export class ReservationFormComponent implements OnInit {
       this.submitTxt = 'Proceed';
 
       this.reservationFG.reset({
-        flight: {value: '', disabled: true},
+        flightName: {value: '', disabled: true},
         seats: {value: '', disabled: true},
         created: {value: '', disabled: true},
         state: {value: '', disabled: true}
@@ -82,7 +82,7 @@ export class ReservationFormComponent implements OnInit {
 
   onSubmit() {
     if (this.reservationFG.valid) {
-      this.reservationValue.flight = +this.reservationFG.value.flight;
+      this.reservationValue.flightName = this.reservationFG.value.flightName;
       this.reservationValue.seats = +this.reservationFG.value.seats;
       this.reservationValue.password = this.reservationFG.value.password;
       this.onReservationChange.emit(this.reservationValue);

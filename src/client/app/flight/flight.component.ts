@@ -62,11 +62,13 @@ export class FlightComponent implements OnInit {
   getFlights() {
     const sort = this.sortService.getSortFor(this.selectedSortField);
     this.flightService.getAll(sort, this.filter, this.pagination)
-      .then((res) => {
-        this.flights = res[0];
-        this.recordCount = res[1];
-      })
-      .catch(error => this.errorMessage = <any>error);
+      .subscribe(
+        (res) => {
+          this.flights = res[0];
+          this.recordCount = res[1];
+        },
+        (error) => this.errorMessage = <any>error
+      );
   }
 
   addFlight(flight: Flight)  {

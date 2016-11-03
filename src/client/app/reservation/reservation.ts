@@ -4,6 +4,7 @@
 interface Reservation {
   id: number;
   flight: number;
+  flightName?: string;
   seats: number;
   password: string;
   state: any;

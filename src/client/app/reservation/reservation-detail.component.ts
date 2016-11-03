@@ -45,7 +45,6 @@ export class ReservationDetailComponent implements OnInit {
   }
 
   payForReservation() {
-    console.log(111, this.selectedReservation.id);
     this.reservationService.pay(this.selectedReservation.id)
       .then(this.back.bind(this));
   }

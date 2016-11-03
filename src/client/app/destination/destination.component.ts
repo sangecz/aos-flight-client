@@ -43,8 +43,10 @@ export class DestinationComponent implements OnInit {
 
   getDestinations() {
     this.destinationService.getAll(this.sortService.getSortFor(nameField))
-      .then(destinations => this.destinations = destinations)
-      .catch(error => this.errorMessage = <any>error);
+      .subscribe(
+        destinations => this.destinations = destinations,
+        error => this.errorMessage = <any>error
+      );
   }
 
   addDestination(destination: Destination)  {

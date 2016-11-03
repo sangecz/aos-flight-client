@@ -2,10 +2,12 @@ import {Injectable} from '@angular/core';
 import {Http, Response, RequestOptions, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/toPromise';
 
 import {CONSTANTS} from "../config/app.constants";
 import {Pagination, DepartureFilter, Sort} from "../util";
+import {DestinationService} from "../destination/destination.service";
 
 const endpoint = 'flights';
 const apiUrl = '/api';
@@ -15,35 +17,48 @@ export class FlightService {
 
   options: RequestOptions;
 
-  constructor(private http: Http) {
+  constructor(private http: Http,
+              private destinationService: DestinationService) {
     this.options = new RequestOptions({headers: this.createHeaders()});
   }
 
   /**
    * @param sort.order 1 == asc ... -1 == desc
    */
-  getAll(sort: Sort, filter: DepartureFilter, pagination: Pagination): Promise<[Flight[], number]> {
-    if(sort && sort.order) {
+  getAll(sort: Sort, filter: DepartureFilter, pagination: Pagination): Observable<any[]> {
+    if (sort && sort.order) {
       this.options.headers.append(CONSTANTS.headers.xOrder, `${sort.field}:${sort.order}`);
     }
 
-    if(filter && filter.from && filter.to) {
+    if (filter && filter.from && filter.to) {
       this.options.headers.append(CONSTANTS.headers.xFilter, `dateOfDepartureFrom=${filter.from},dateOfDepartureTo=${filter.to}`);
     }
 
-    if(pagination && pagination.base && pagination.offset) {
+    if (pagination && pagination.base && pagination.offset) {
       this.options.headers.append(CONSTANTS.headers.xBase, pagination.base + '');
       this.options.headers.append(CONSTANTS.headers.xOffset, pagination.offset + '');
     }
 
     const totalCount = 13;
 
-    return this.http.get(`${apiUrl}/${endpoint}`, this.options)
-      .toPromise()
-      .then((res: Response) => {
-        return [res.json().data, totalCount];
-      });
+    return Observable.forkJoin(
+      this.http.get(`${apiUrl}/${endpoint}`, this.options).map((res: Response) => res.json().data),
+      this.destinationService.getAll(null)
+      )
+      .map(res => {
+        let flights: Flight[] = res[0];
+        let destinations: Destination[] = res[1];
 
+        flights.forEach((f: Flight) => {
+          destinations.forEach(d => {
+            if(f.from === d.id) f.fromName = d.name;
+            if(f.to === d.id) f.toName = d.name;
+          });
+        });
+
+        return flights;
+      })
+      .map((res) => [res, totalCount]);
   }
 
   getOne(id: number): Promise<Flight> {
@@ -76,6 +91,8 @@ export class FlightService {
     delete flight.url;
     delete flight.distance;
     delete flight.price;
+    delete flight.fromName;
+    delete flight.toName;
   }
 
   private handleError(error: any) {

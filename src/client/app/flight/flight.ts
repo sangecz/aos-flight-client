@@ -9,6 +9,8 @@ interface Flight {
   seats: number;
   price: number;
   from: number;
+  fromName?: string;
   to: number;
+  toName?: string;
   url: string;
 }

@@ -22,15 +22,13 @@ export class DestinationService {
   /**
    * @param sort 1 == asc ... -1 == desc
    */
-  getAll(sort: Sort): Promise<Destination[]> {
+  getAll(sort: Sort): Observable<Destination[]> {
     if(sort && sort.order) {
       this.options.headers.append(CONSTANTS.headers.xOrder, `${sort.field}:${sort.order}`);
     }
 
     return this.http.get(`${apiUrl}/${endpoint}`, this.options)
-      .toPromise()
-      .then((res: Response) => res.json().data);
-
+      .map((res: Response) => res.json().data);
   }
 
   getOne(id: number): Promise<Destination> {

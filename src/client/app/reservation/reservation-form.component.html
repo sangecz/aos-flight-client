@@ -6,11 +6,12 @@
       <td>
         <label>
           <span>Flight</span>
-          <input type="number" formControlName="flight">
+          <input type="text" formControlName="flightName">
         </label>
-        <div class="error" *ngIf="reservationFG.get('flight').hasError('required') && reservationFG.get('flight').touched">
+        <div class="error" *ngIf="reservationFG.get('flightName').hasError('required') && reservationFG.get('flightName').touched">
           Flight is required
         </div>
+        <!-- TODO select -->
       </td>
     </tr>
 

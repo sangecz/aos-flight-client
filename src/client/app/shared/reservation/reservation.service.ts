@@ -7,6 +7,8 @@ import {Config} from "../config/env.config";
 import 'rxjs/add/operator/toPromise';
 import {reservationStates} from "../../reservation/reservation-states";
 import {CONSTANTS} from "../config/app.constants";
+import {FlightService} from "../flight/flight.service";
+import {reservations} from "../../reservation/reservation.mock";
 
 const endpoint = 'reservations';
 const apiUrl = '/app';
@@ -16,21 +18,51 @@ export class ReservationService {
 
   options: RequestOptions;
 
-  constructor(private http: Http) {
+  constructor(
+    private flightService: FlightService,
+    private http: Http
+  ) {
     this.options = new RequestOptions({headers: this.createHeaders()});
   }
 
   getAll(): Promise<Reservation[]> {
-    return this.http.get(`${apiUrl}/${endpoint}`, this.options)
-      .toPromise()
-      .then((res: Response) => res.json().data);
+
+    return Observable.forkJoin(
+      this.http.get(`${apiUrl}/${endpoint}`, this.options).map((res: Response) => res.json().data),
+      this.flightService.getAll(null, null, null)
+      )
+      .map(res => {
+        let flights: Flight[] = res[1][0];
+        let reservations: Reservation[] = res[0];
+
+        reservations.forEach((r: Reservation) => {
+          flights.forEach((f: Flight) => {
+            if(r.flight === f.id) r.flightName = f.name;
+          });
+        });
+
+        return reservations;
+      })
+      .toPromise();
   }
 
   // TODO pridat hlavicku: X-Password, jak se user dozvi id pro zobrazeni, kdyz nemuze listovat?
   getOne(id: number): Promise<Reservation> {
-    return this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .toPromise()
-      .then((res: Response) => res.json().data);
+    return Observable.forkJoin(
+      this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options).map((res: Response) => res.json().data),
+      this.flightService.getAll(null, null, null)
+      )
+      .map(res => {
+        let reservation: Reservation = res[0];
+        let flights: Flight[] = res[1][0];
+
+        flights.forEach((f: Flight) => {
+          if(reservation.flight === f.id) reservation.flightName = f.name;
+        });
+
+        return reservation;
+      })
+      .toPromise();
   }
 
   create(reservation: Reservation): Promise<Response> {
@@ -67,6 +99,7 @@ export class ReservationService {
     delete reservation.url;
     delete reservation.created;
     delete reservation.password;
+    delete reservation.flightName;
   }
 
   /**
