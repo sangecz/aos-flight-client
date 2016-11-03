@@ -5,7 +5,7 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/toPromise';
 
-import {CONSTANTS} from "../config/app.constants";
+import {Constants} from "../config/app.constants";
 import {Pagination, DepartureFilter, Sort} from "../util";
 import {DestinationService} from "../destination/destination.service";
 
@@ -27,16 +27,16 @@ export class FlightService {
    */
   getAll(sort: Sort, filter: DepartureFilter, pagination: Pagination): Observable<any[]> {
     if (sort && sort.order) {
-      this.options.headers.append(CONSTANTS.headers.xOrder, `${sort.field}:${sort.order}`);
+      this.options.headers.append(Constants.headers.xOrder, `${sort.field}:${sort.order}`);
     }
 
     if (filter && filter.from && filter.to) {
-      this.options.headers.append(CONSTANTS.headers.xFilter, `dateOfDepartureFrom=${filter.from},dateOfDepartureTo=${filter.to}`);
+      this.options.headers.append(Constants.headers.xFilter, `dateOfDepartureFrom=${filter.from},dateOfDepartureTo=${filter.to}`);
     }
 
     if (pagination && pagination.base && pagination.offset) {
-      this.options.headers.append(CONSTANTS.headers.xBase, pagination.base + '');
-      this.options.headers.append(CONSTANTS.headers.xOffset, pagination.offset + '');
+      this.options.headers.append(Constants.headers.xBase, pagination.base + '');
+      this.options.headers.append(Constants.headers.xOffset, pagination.offset + '');
     }
 
     const totalCount = 13;

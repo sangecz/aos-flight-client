@@ -17,3 +17,7 @@ export class AppComponent {
     console.log('Environment config', Config);
   }
 }
+
+
+// TODO select dateTime component
+

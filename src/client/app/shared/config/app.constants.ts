@@ -1,7 +1,7 @@
 /**
  * Created by sange on 29/10/2016.
  */
-export const CONSTANTS = {
+export const Constants = {
 
   headers: {
     xOrder: 'X-Order',
@@ -15,5 +15,9 @@ export const CONSTANTS = {
   sort: {
     desc: 'desc',
     asc: 'asc'
+  },
+
+  regexp: {
+    POSITIVE_NUMBER: '[1-9][0-9]*'
   }
 };

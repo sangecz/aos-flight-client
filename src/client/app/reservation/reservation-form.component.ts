@@ -3,6 +3,8 @@
  */
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
+import {Constants} from "../shared/config/app.constants";
+import {FlightService} from "../shared/flight/flight.service";
 
 const emptyReservation: any = {
   name: null,
@@ -25,11 +27,15 @@ export class ReservationFormComponent implements OnInit {
   private reservationValue: Reservation;
   private detail: boolean = false;
   private submitTxt: string = '';
+  private _flights: Flight[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private flightService: FlightService
+  ) {
     this.reservationFG = this.fb.group({
-      flightName: ['', [Validators.required]],
-      seats: ['', [Validators.required]],
+      flight: ['', [Validators.required]],
+      seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
       created: ['', []],
       state: ['', []],
       password: ['', []]
@@ -45,9 +51,9 @@ export class ReservationFormComponent implements OnInit {
   set reservation(val: Reservation) {
     this.reservationValue = val;
 
-    if (val && val.flightName && val.seats && val.created && val.state) {
+    if (val && val.flight && val.seats && val.created && val.state) {
       this.reservationFG.setValue({
-        flightName: val.flightName,
+        flight: val.flight,
         seats: val.seats,
         created: val.created,
         state: val.state,
@@ -61,11 +67,12 @@ export class ReservationFormComponent implements OnInit {
   @Output() onRemove = new EventEmitter<number>();
 
   ngOnInit(): void {
+    this.getFlights();
     if(this.detail) {
       this.submitTxt = 'Proceed';
 
       this.reservationFG.reset({
-        flightName: {value: '', disabled: true},
+        flight: {value: '', disabled: true},
         seats: {value: '', disabled: true},
         created: {value: '', disabled: true},
         state: {value: '', disabled: true}
@@ -82,7 +89,8 @@ export class ReservationFormComponent implements OnInit {
 
   onSubmit() {
     if (this.reservationFG.valid) {
-      this.reservationValue.flightName = this.reservationFG.value.flightName;
+      console.log(+this.reservationFG.value.flight);
+      this.reservationValue.flight = +this.reservationFG.value.flight;
       this.reservationValue.seats = +this.reservationFG.value.seats;
       this.reservationValue.password = this.reservationFG.value.password;
       this.onReservationChange.emit(this.reservationValue);
@@ -95,6 +103,20 @@ export class ReservationFormComponent implements OnInit {
 
   remove(){
     this.onRemove.emit(this.reservationValue.id);
+  }
+
+  getFlights() {
+    this.flightService.getAll(null, null, null)
+      .subscribe(
+        res => {
+          this._flights = res[0];
+
+          if(!this.detail && this._flights.length > 0) {
+            this.reservationFG.get('flight').setValue(this._flights[0].id);
+          }
+        },
+        err => {}
+      );
   }
 
 

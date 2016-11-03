@@ -6,12 +6,13 @@
       <td>
         <label>
           <span>Flight</span>
-          <input type="text" formControlName="flightName">
+          <select formControlName="flight" >
+            <option *ngFor="let f of _flights" [ngValue]="f.id">{{f.name}}</option>
+          </select>
         </label>
-        <div class="error" *ngIf="reservationFG.get('flightName').hasError('required') && reservationFG.get('flightName').touched">
+        <div class="error" *ngIf="reservationFG.get('flight').hasError('required') && reservationFG.get('flight').touched">
           Flight is required
         </div>
-        <!-- TODO select -->
       </td>
     </tr>
 

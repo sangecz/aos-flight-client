@@ -4,7 +4,7 @@
 
 import {Injectable} from "@angular/core";
 import {Sort} from "./sort";
-import {CONSTANTS} from "../config/app.constants";
+import {Constants} from "../config/app.constants";
 
 @Injectable()
 export class SortService {
@@ -33,9 +33,9 @@ export class SortService {
   private getOrderString(orderValue: number): string {
     switch (orderValue) {
       case 1:
-        return CONSTANTS.sort.asc;
+        return Constants.sort.asc;
       case 2:
-        return CONSTANTS.sort.desc;
+        return Constants.sort.desc;
       default:
         return null;
     }

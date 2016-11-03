@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/toPromise';
-import {CONSTANTS} from "../config/app.constants";
+import {Constants} from "../config/app.constants";
 import {Sort} from "../util/sort";
 
 const endpoint = 'destinations';
@@ -24,7 +24,7 @@ export class DestinationService {
    */
   getAll(sort: Sort): Observable<Destination[]> {
     if(sort && sort.order) {
-      this.options.headers.append(CONSTANTS.headers.xOrder, `${sort.field}:${sort.order}`);
+      this.options.headers.append(Constants.headers.xOrder, `${sort.field}:${sort.order}`);
     }
 
     return this.http.get(`${apiUrl}/${endpoint}`, this.options)

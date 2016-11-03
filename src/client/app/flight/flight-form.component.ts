@@ -3,6 +3,7 @@
  */
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
+import {Constants} from "../shared/config/app.constants";
 
 const emptyFlight: any = {
   name: null,
@@ -28,7 +29,7 @@ export class FlightFormComponent implements OnInit {
     this.flightFG = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       dateOfDeparture: ['', [Validators.required]],
-      seats: ['', [Validators.required]],
+      seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
       from: ['', [Validators.required]],
       to: ['', [Validators.required]]
     });

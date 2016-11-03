@@ -3,8 +3,6 @@ import {Router} from "@angular/router";
 
 import {ReservationService} from "../shared/reservation/reservation.service";
 
-// TODO pridat PAY tlacitko
-
 @Component({
   moduleId: module.id,
   selector: 'sd-reservation',
@@ -14,7 +12,7 @@ import {ReservationService} from "../shared/reservation/reservation.service";
 export class ReservationComponent implements OnInit {
 
   errorMessage: string;
-  reservations: any[] = [];
+  reservations: Reservation[] = [];
   selectedReservation: Reservation = {
     id: null,
     flight: null,
@@ -36,14 +34,16 @@ export class ReservationComponent implements OnInit {
 
   getReservations() {
     this.reservationService.getAll()
-      .then(reservations => this.reservations = reservations)
-      .catch(error => this.errorMessage = <any>error);
+      .then((res: any) => {
+        this.reservations = <Reservation[]>res[0];
+      })
+      .catch((err: any) => this.errorMessage = <any>err);
   }
 
   addReservation(reservation: Reservation)  {
     this.reservationService.create(reservation)
       .then(this.getReservations.bind(this))
-      .catch(err => {
+      .catch((err: any) => {
         this.errorMessage = <any>err;
         setTimeout(() => this.errorMessage = '', 1000);
       });

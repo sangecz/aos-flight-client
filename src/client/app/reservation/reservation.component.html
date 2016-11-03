@@ -1,5 +1,7 @@
 <h2>Add reservation</h2>
+
 <reservation-form [reservation]="selectedReservation" (onReservationChange)="addReservation($event)"></reservation-form>
+
 <span class="error">{{errorMessage}}</span>
 <h2>Reservation list</h2>
 <table>

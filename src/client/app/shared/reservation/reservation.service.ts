@@ -6,7 +6,7 @@ import 'rxjs/add/observable/throw';
 import {Config} from "../config/env.config";
 import 'rxjs/add/operator/toPromise';
 import {reservationStates} from "../../reservation/reservation-states";
-import {CONSTANTS} from "../config/app.constants";
+import {Constants} from "../config/app.constants";
 import {FlightService} from "../flight/flight.service";
 import {reservations} from "../../reservation/reservation.mock";
 
@@ -25,7 +25,7 @@ export class ReservationService {
     this.options = new RequestOptions({headers: this.createHeaders()});
   }
 
-  getAll(): Promise<Reservation[]> {
+  getAll(): Promise<any> {
 
     return Observable.forkJoin(
       this.http.get(`${apiUrl}/${endpoint}`, this.options).map((res: Response) => res.json().data),
@@ -41,7 +41,7 @@ export class ReservationService {
           });
         });
 
-        return reservations;
+        return [reservations, flights];
       })
       .toPromise();
   }
@@ -78,7 +78,7 @@ export class ReservationService {
     this.deleteProperties(reservation);
     reservation.state = reservationStates.CANCELED;
 
-    this.options.headers.append(CONSTANTS.headers.xPassword, password);
+    this.options.headers.append(Constants.headers.xPassword, password);
 
     return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(reservation), this.options)
       .toPromise()
