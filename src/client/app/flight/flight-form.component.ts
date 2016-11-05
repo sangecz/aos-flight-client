@@ -4,12 +4,8 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
 import {Constants} from "../shared/config/app.constants";
-
-const emptyFlight: any = {
-  name: null,
-  lat: null,
-  lon: null
-};
+import {DestinationService} from "../shared/destination/destination.service";
+import {validateDateTime} from "../shared/forms/validator";
 
 @Component({
   moduleId: module.id,
@@ -22,13 +18,16 @@ export class FlightFormComponent implements OnInit {
   private flightFG: FormGroup;
   private flightValue: Flight;
   private detail: boolean = false;
+  private destinations: Destination[];
 
 
-
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private destinationService: DestinationService
+  ) {
     this.flightFG = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      dateOfDeparture: ['', [Validators.required]],
+      dateOfDeparture: ['', [Validators.required, validateDateTime()]],
       seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
       from: ['', [Validators.required]],
       to: ['', [Validators.required]]
@@ -60,6 +59,7 @@ export class FlightFormComponent implements OnInit {
   @Output() onRemove = new EventEmitter<number>();
 
   ngOnInit(): void {
+    this.getDestionations();
   }
 
   onSubmit() {
@@ -82,4 +82,19 @@ export class FlightFormComponent implements OnInit {
   }
 
 
+  private getDestionations() {
+    this.destinationService.getAll(null)
+      .subscribe(
+        res => {
+          this.destinations = res;
+          if(this.destinations.length > 0) {
+            this.flightFG.get('from').setValue(this.destinations[0].id);
+            this.flightFG.get('to').setValue(this.destinations[0].id);
+          }
+        },
+        err => {
+
+        }
+      );
+  }
 }

@@ -6,8 +6,6 @@ import {Sort} from "../shared/util/sort";
 import {DepartureFilter} from "../shared/util/filter";
 import {Pagination} from "../shared/util/pagination";
 
-const emptyFilter: DepartureFilter = {from: '', to: ''};
-
 @Component({
   moduleId: module.id,
   selector: 'sd-flight',
@@ -16,11 +14,6 @@ const emptyFilter: DepartureFilter = {from: '', to: ''};
 })
 export class FlightComponent implements OnInit {
 
-  /**
-   * 0 == no sort
-   * 1 == asc
-   * 2 == desc
-   */
   orderValue: number = 0;
   departureField = 'dateOfDeparture';
   nameField = 'name';
@@ -30,7 +23,7 @@ export class FlightComponent implements OnInit {
   ];
   selectedSortField = this.departureField;
 
-  filter: DepartureFilter = emptyFilter;
+  filter: DepartureFilter;
   pagination: Pagination;
   recordCount = 0;
 
@@ -110,9 +103,8 @@ export class FlightComponent implements OnInit {
     this.getFlights();
   }
 
-  clearFilter(){
-    this.filter.from = '';
-    this.filter.to = '';
+  applyFilter(filter: DepartureFilter) {
+    this.filter = filter;
     this.getFlights();
   }
 

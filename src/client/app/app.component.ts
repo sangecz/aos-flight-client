@@ -19,5 +19,3 @@ export class AppComponent {
 }
 
 
-// TODO select dateTime component
-

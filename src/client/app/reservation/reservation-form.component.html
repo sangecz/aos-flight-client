@@ -25,6 +25,9 @@
         <div class="error" *ngIf="reservationFG.get('seats').hasError('required') && reservationFG.get('seats').touched">
           Seats are required
         </div>
+        <div class="error" *ngIf="reservationFG.get('seats').hasError('pattern') && reservationFG.get('seats').touched">
+          Minimum one seat
+        </div>
       </td>
     </tr>
 

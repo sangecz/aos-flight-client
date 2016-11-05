@@ -1,0 +1,14 @@
+<div>
+  <h3>Departure filter</h3>
+  <!--<form novalidate (ngSubmit)="onSubmit()" [formGroup]="flightFilterFG">-->
+  <label>
+    <span>From</span>
+    <input type="text" [(ngModel)]="filter.from" placeholder="2016-11-10T14:48:00" />
+  </label>
+  <label>
+    <span>To</span>
+    <input type="text" [(ngModel)]="filter.to" placeholder="2016-11-10T14:48:00" />
+  </label>
+  <button type="button" (click)="clearFilter()">Clear</button>
+  <button type="button" (click)="applyFilter()">Apply</button>
+</div>

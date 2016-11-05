@@ -3,19 +3,7 @@
 <span class="error">{{errorMessage}}</span>
 <h2>Flight list</h2>
 
-<div>
-  <h3>Departure filter</h3>
-  <label>
-    <span>From</span>
-    <input type="text" [(ngModel)]="filter.from" />
-  </label>
-  <label>
-    <span>To</span>
-    <input type="text" [(ngModel)]="filter.to" />
-  </label>
-  <button type="button" (click)="clearFilter()">Clear</button>
-  <button type="button" (click)="getFlights()">Apply</button>
-</div>
+<departure-filter (onDepartureFilterChange)="applyFilter($event)"></departure-filter>
 
 <pagination
   [recordCount]="recordCount"

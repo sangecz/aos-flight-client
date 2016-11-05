@@ -20,10 +20,10 @@ export = (done: any) => {
       'rxjs/*': 'node_modules/rxjs/*.js',
     },
     map: {
-      'rxjs': 'n:rxjs',
+      'rxjs': 'n:rxjs'
     },
     packages: {
-      'rxjs': {main: 'Rx.js', defaultExtension: 'js'},
+      'rxjs': {main: 'Rx.js', defaultExtension: 'js'}
     }
   });
   builder.bundle('rxjs', 'node_modules/.tmp/Rx.min.js', options)

@@ -21,10 +21,13 @@
       <td>
         <label>
           <span>Departure date</span>
-          <input type="text" formControlName="dateOfDeparture">
+          <input type="text" formControlName="dateOfDeparture" placeholder="2016-11-10T14:48:00" />
         </label>
         <div class="error" *ngIf="flightFG.get('dateOfDeparture').hasError('required') && flightFG.get('dateOfDeparture').touched">
           Departure date is required
+        </div>
+        <div class="error" *ngIf="flightFG.get('dateOfDeparture').hasError('validateDateTime') && flightFG.get('dateOfDeparture').touched">
+          Departure date format wrong
         </div>
       </td>
     </tr>
@@ -38,6 +41,9 @@
         <div class="error" *ngIf="flightFG.get('seats').hasError('required') && flightFG.get('seats').touched">
           Seats are required
         </div>
+        <div class="error" *ngIf="flightFG.get('seats').hasError('pattern') && flightFG.get('seats').touched">
+          Minimum one seat
+        </div>
       </td>
     </tr>
 
@@ -45,15 +51,13 @@
       <td>
         <label>
           <span>From</span>
-          <input type="number" formControlName="from">
+          <select formControlName="from" >
+            <option *ngFor="let d of destinations" [ngValue]="d.id">{{d.name}}</option>
+          </select>
         </label>
         <div class="error" *ngIf="flightFG.get('from').hasError('required') && flightFG.get('from').touched">
           From is required
         </div>
-        <!-- TODO select -->
-        <!--<div class="error" *ngIf="flightFG.get('from').hasError('minlength') && flightFG.get('from').touched">-->
-          <!--Minimum of 3 characters-->
-        <!--</div>-->
       </td>
     </tr>
 
@@ -61,15 +65,13 @@
       <td>
         <label>
           <span>To</span>
-          <input type="number" formControlName="to">
+          <select formControlName="to" >
+            <option *ngFor="let d of destinations" [ngValue]="d.id">{{d.name}}</option>
+          </select>
         </label>
         <div class="error" *ngIf="flightFG.get('to').hasError('required') && flightFG.get('to').touched">
           To is required
         </div>
-        <!-- TODO select -->
-        <!--<div class="error" *ngIf="flightFG.get('to').hasError('minlength') && flightFG.get('to').touched">-->
-          <!--Minimum of 3 characters-->
-        <!--</div>-->
       </td>
     </tr>
 
