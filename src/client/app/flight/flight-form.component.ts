@@ -19,12 +19,16 @@ export class FlightFormComponent implements OnInit {
   private flightValue: Flight;
   private detail: boolean = false;
   private destinations: Destination[];
-
+  datetimePlaceholder = Constants.DATETIME_PLACEHOLDER;
 
   constructor(
     private fb: FormBuilder,
     private destinationService: DestinationService
   ) {
+    this.createForm();
+  }
+
+  private createForm() {
     this.flightFG = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       dateOfDeparture: ['', [Validators.required, validateDateTime()]],
@@ -65,11 +69,13 @@ export class FlightFormComponent implements OnInit {
   onSubmit() {
     if (this.flightFG.valid) {
       this.flightValue.name = this.flightFG.value.name;
-      this.flightValue.dateOfDeparture = this.flightFG.value.dateOfDeparture;
+      this.flightValue.dateOfDeparture = new Date(this.flightFG.value.dateOfDeparture);
       this.flightValue.seats = +this.flightFG.value.seats;
       this.flightValue.from = +this.flightFG.value.from;
       this.flightValue.to = +this.flightFG.value.to;
+
       this.onFlightChange.emit(this.flightValue);
+      this.createForm();
     }
   }
 
@@ -87,7 +93,7 @@ export class FlightFormComponent implements OnInit {
       .subscribe(
         res => {
           this.destinations = res;
-          if(this.destinations.length > 0) {
+          if(this.destinations.length > 0 && !this.detail) {
             this.flightFG.get('from').setValue(this.destinations[0].id);
             this.flightFG.get('to').setValue(this.destinations[0].id);
           }

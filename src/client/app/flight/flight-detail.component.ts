@@ -13,35 +13,42 @@ import {FlightService} from "../shared/flight/flight.service";
 })
 export class FlightDetailComponent implements OnInit {
 
+  errorMessage: string;
   selectedFlight: Flight;
 
-  constructor(
-    public flightService: FlightService,
-    public route: ActivatedRoute,
-    public router: Router
-  ) {
+  constructor(public flightService: FlightService,
+              public route: ActivatedRoute,
+              public router: Router) {
   }
 
   ngOnInit() {
     this.route.params.forEach((params: Params) => {
       let id = +params['id']; // + konvertuje string na number
       this.flightService.getOne(id)
-        .then(flight => this.selectedFlight = flight)
-        .catch(this.back.bind(this));
-    })
+        .subscribe(
+          flight => this.selectedFlight = flight,
+          err => this.errorMessage = err
+        );
+    });
   }
 
   saveFlight(flight: Flight) {
     console.log('save', flight);
-    if(flight) {
+    if (flight) {
       this.flightService.update(flight)
-        .then(this.back.bind(this));
+        .subscribe(
+          () => this.back(),
+          err => this.errorMessage = err
+        );
     }
   }
 
   removeFlight(id: number) {
     this.flightService.remove(id)
-      .then(this.back.bind(this));
+      .subscribe(
+        () => this.back(),
+        err => this.errorMessage = err
+      );
   }
 
   back() {

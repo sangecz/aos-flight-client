@@ -14,6 +14,7 @@ import {reservationStates} from "./reservation-states";
 })
 export class ReservationDetailComponent implements OnInit {
 
+  errorMessage: string;
   selectedReservation: Reservation;
 
   constructor(
@@ -27,26 +28,37 @@ export class ReservationDetailComponent implements OnInit {
     this.route.params.forEach((params: Params) => {
       let id = +params['id']; // + konvertuje string na number
       this.reservationService.getOne(id)
-        .then(reservation => this.selectedReservation = reservation)
-        .catch(this.back.bind(this));
+        .subscribe(
+          reservation => this.selectedReservation = reservation,
+          err => this.errorMessage = err
+        );
     })
   }
 
   saveReservation(reservation: Reservation) {
     if(reservation) {
       this.reservationService.update(reservation)
-        .then(this.back.bind(this));
+        .subscribe(
+          () => this.back(),
+          err => this.errorMessage = err
+        );
     }
   }
 
   removeReservation(id: number) {
     this.reservationService.remove(id)
-      .then(this.back.bind(this))
+      .subscribe(
+        () => this.back(),
+        err => this.errorMessage = err
+      );
   }
 
   payForReservation() {
     this.reservationService.pay(this.selectedReservation.id)
-      .then(this.back.bind(this));
+      .subscribe(
+        () => this.back(),
+        err => this.errorMessage = err
+      );
   }
 
   back() {

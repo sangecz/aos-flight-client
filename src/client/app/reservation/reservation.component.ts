@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 
 import {ReservationService} from "../shared/reservation/reservation.service";
+import {AuthService} from "../shared/auth/auth.service";
+
 
 @Component({
   moduleId: module.id,
@@ -12,6 +14,7 @@ import {ReservationService} from "../shared/reservation/reservation.service";
 export class ReservationComponent implements OnInit {
 
   errorMessage: string;
+  createdReservation : Reservation;
   reservations: Reservation[] = [];
   selectedReservation: Reservation = {
     id: null,
@@ -25,7 +28,8 @@ export class ReservationComponent implements OnInit {
 
   constructor(
     public reservationService: ReservationService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -34,20 +38,21 @@ export class ReservationComponent implements OnInit {
 
   getReservations() {
     this.reservationService.getAll()
-      .then((res: any) => {
-        this.reservations = <Reservation[]>res[0];
-      })
-      .catch((err: any) => this.errorMessage = <any>err);
+      .subscribe(
+        (res: any) => this.reservations = <Reservation[]>res[0],
+        err => this.errorMessage = err
+      );
   }
 
   addReservation(reservation: Reservation)  {
     this.reservationService.create(reservation)
-      .then(this.getReservations.bind(this))
-      .catch((err: any) => {
-        this.errorMessage = <any>err;
-        setTimeout(() => this.errorMessage = '', 1000);
-      });
-
+      .subscribe(
+        res => {
+          this.getReservations();
+          this.createdReservation = res;
+        },
+        err => this.errorMessage = err
+      );
   }
 
   selectReservation(reservation: Reservation){

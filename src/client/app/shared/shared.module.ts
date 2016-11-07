@@ -10,6 +10,8 @@ import {ReservationService} from "./reservation/reservation.service";
 import {FlightService} from "./flight/flight.service";
 import {SortService} from "./util/sort.service";
 import {PaginationComponent} from "./pagination/pagination.component";
+import {AuthService} from "./auth/auth.service";
+import {ErrorMessageComponent} from "./error-message/error-message.component";
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
@@ -24,12 +26,14 @@ import {PaginationComponent} from "./pagination/pagination.component";
   declarations: [
     ToolbarComponent,
     NavbarComponent,
-    PaginationComponent
+    PaginationComponent,
+    ErrorMessageComponent
   ],
   exports: [
     ToolbarComponent,
     NavbarComponent,
     PaginationComponent,
+    ErrorMessageComponent,
     CommonModule,
     FormsModule,
     RouterModule
@@ -43,7 +47,8 @@ export class SharedModule {
         DestinationService,
         ReservationService,
         FlightService,
-        SortService
+        SortService,
+        AuthService
       ]
     };
   }

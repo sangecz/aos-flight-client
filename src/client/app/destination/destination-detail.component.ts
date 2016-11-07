@@ -13,6 +13,7 @@ import {DestinationService} from "../shared/destination/destination.service";
 })
 export class DestinationDetailComponent implements OnInit {
 
+  errorMessage: string;
   selectedDestination: Destination;
 
   constructor(
@@ -26,25 +27,29 @@ export class DestinationDetailComponent implements OnInit {
     this.route.params.forEach((params: Params) => {
       let id: number = +params['id']; // + konvertuje string na number
       this.destinationService.getOne(id)
-        .then(destination => {
-          this.selectedDestination = destination;
-          console.log(destination);
-        })
-        .catch(this.back.bind(this));
+        .subscribe(
+          destination => this.selectedDestination = destination,
+          err => this.errorMessage = err
+        );
     })
   }
 
   saveDestination(destination: Destination) {
-    console.log('save', destination);
     if(destination) {
       this.destinationService.update(destination)
-        .then(this.back.bind(this));
+        .subscribe(
+          res => this.back(),
+          err => this.errorMessage = err
+        );
     }
   }
 
   removeDestination(id: number) {
     this.destinationService.remove(id)
-      .then(this.back.bind(this));
+      .subscribe(
+        res => this.back(),
+        err => this.errorMessage = err
+      );
   }
 
   back() {

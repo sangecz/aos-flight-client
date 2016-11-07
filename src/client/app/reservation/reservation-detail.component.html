@@ -5,8 +5,10 @@
   [isDetail]="true"
   (onReservationChange)="saveReservation($event)"
   (onRemove)="removeReservation($event)"
-  (onBack)="back($event)"
->
+  (onBack)="back($event)">
 </reservation-form>
 
 <button type="button" *ngIf="showPayBtn()" (click)="payForReservation()">Pay</button>
+
+<error-message [errorMessage]="errorMessage" (onDismiss)="back()"></error-message>
+

@@ -2,21 +2,31 @@
 
 <reservation-form [reservation]="selectedReservation" (onReservationChange)="addReservation($event)"></reservation-form>
 
-<span class="error">{{errorMessage}}</span>
-<h2>Reservation list</h2>
-<table>
-  <tr>
-    <th>Flight</th>
-    <th>Seats</th>
-    <th>Created</th>
-    <th>Password</th>
-    <th>State</th>
-  </tr>
-  <tr *ngFor="let reservation of reservations" (click)="selectReservation(reservation)">
-    <td>{{reservation.flightName}}</td>
-    <td>{{reservation.seats}}</td>
-    <td>{{reservation.created | date:'medium'}}</td>
-    <td>{{reservation.password}}</td>
-    <td>{{reservation.state}}</td>
-  </tr>
-</table>
+<error-message [errorMessage]="errorMessage"></error-message>
+
+<div [hidden]="!createdReservation">
+  <!-- TODO pouzit heslo pro vstup do rezervace -->
+  <h5>Last created reservation:</h5>
+  <a href="#" routerLink="/reservation/{{createdReservation && createdReservation.id}}">reservation link</a><br/>
+  <span> password: {{createdReservation && createdReservation.password}}</span>
+</div>
+
+<div *ngIf="authService.isAdmin">
+  <h2>Reservation list</h2>
+  <table>
+    <tr>
+      <th>Flight</th>
+      <th>Seats</th>
+      <th>Created</th>
+      <th>Password</th>
+      <th>State</th>
+    </tr>
+    <tr *ngFor="let reservation of reservations" (click)="selectReservation(reservation)">
+      <td>{{reservation.flightName}}</td>
+      <td>{{reservation.seats}}</td>
+      <td>{{reservation.created | date:'yyyy-MM-ddTHH:mm:ss Z'}}</td>
+      <td>{{reservation.password}}</td>
+      <td>{{reservation.state}}</td>
+    </tr>
+  </table>
+</div>

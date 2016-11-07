@@ -19,5 +19,7 @@ export const Constants = {
 
   regexp: {
     POSITIVE_NUMBER: '[1-9][0-9]*'
-  }
+  },
+
+  DATETIME_PLACEHOLDER: '2016-11-10T14:48:00+01:00'
 };

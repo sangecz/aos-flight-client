@@ -1,6 +1,8 @@
 <h2>Add flight</h2>
 <flight-form [flight]="selectedFlight" (onFlightChange)="addFlight($event)"></flight-form>
-<span class="error">{{errorMessage}}</span>
+
+<error-message [errorMessage]="errorMessage"></error-message>
+
 <h2>Flight list</h2>
 
 <departure-filter (onDepartureFilterChange)="applyFilter($event)"></departure-filter>
@@ -22,7 +24,7 @@
   </tr>
   <tr *ngFor="let flight of flights" (click)="selectFlight(flight)">
     <td>{{flight.name}}</td>
-    <td>{{flight.dateOfDeparture | date:'medium'}}</td>
+    <td>{{flight.dateOfDeparture | date:'yyyy-MM-ddTHH:mm:ss Z'}}</td>
     <td>{{flight.distance}}</td>
     <td>{{flight.seats}}</td>
     <td>{{flight.price}}</td>

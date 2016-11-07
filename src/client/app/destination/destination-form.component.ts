@@ -25,6 +25,10 @@ export class DestinationFormComponent implements OnInit {
 
 
   constructor(private fb: FormBuilder) {
+    this.createForm();
+  }
+
+  private createForm() {
     this.destinationFG = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       lat: ['', [Validators.required]],
@@ -62,7 +66,9 @@ export class DestinationFormComponent implements OnInit {
       this.destinationValue.name = this.destinationFG.value.name;
       this.destinationValue.lat = this.destinationFG.value.lat;
       this.destinationValue.lon = this.destinationFG.value.lon;
+
       this.onDestinationChange.emit(this.destinationValue);
+      this.createForm();
     }
   }
 

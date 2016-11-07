@@ -1,14 +1,51 @@
 <div>
   <h3>Departure filter</h3>
-  <!--<form novalidate (ngSubmit)="onSubmit()" [formGroup]="flightFilterFG">-->
-  <label>
-    <span>From</span>
-    <input type="text" [(ngModel)]="filter.from" placeholder="2016-11-10T14:48:00" />
-  </label>
-  <label>
-    <span>To</span>
-    <input type="text" [(ngModel)]="filter.to" placeholder="2016-11-10T14:48:00" />
-  </label>
-  <button type="button" (click)="clearFilter()">Clear</button>
-  <button type="button" (click)="applyFilter()">Apply</button>
+  <form novalidate (ngSubmit)="onSubmit()" [formGroup]="filterFG">
+
+    <table>
+
+      <tr>
+        <td>
+          <label>
+            <span>From</span>
+            <input type="text" formControlName="from" [placeholder]="datetimePlaceholder"/>
+          </label>
+          <div class="error"
+               *ngIf="filterFG.get('from').hasError('required') && filterFG.get('from').touched">
+            From date is required
+          </div>
+          <div class="error"
+               *ngIf="filterFG.get('from').hasError('validateDateTime') && filterFG.get('from').touched">
+            From date format wrong
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label>
+            <span>To</span>
+            <input type="text" formControlName="to" [placeholder]="datetimePlaceholder"/>
+          </label>
+          <div class="error"
+               *ngIf="filterFG.get('to').hasError('required') && filterFG.get('to').touched">
+            To date is required
+          </div>
+          <div class="error"
+               *ngIf="filterFG.get('to').hasError('validateDateTime') && filterFG.get('to').touched">
+            To date format wrong
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <button type="button" (click)="clearFilter()">Clear</button>
+          <button type="submit" [disabled]="filterFG.invalid">Apply</button>
+        </td>
+      </tr>
+
+    </table>
+
+  </form>
 </div>

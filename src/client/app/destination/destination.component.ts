@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 
-import { DestinationService } from '../shared/index';
+import {DestinationService} from '../shared/index';
 import {SortService} from "../shared/util/sort.service";
 
 const nameField = 'name';
@@ -14,13 +14,13 @@ const nameField = 'name';
 })
 export class DestinationComponent implements OnInit {
 
+  errorMessage: string;
   /**
    * 0 == no sort
    * 1 == asc
    * 2 == desc
    */
   private orderValue: number = 0;
-  errorMessage: string;
   destinations: any[] = [];
   selectedDestination: Destination = {
     name: null,
@@ -30,11 +30,10 @@ export class DestinationComponent implements OnInit {
     id: null
   };
 
-  constructor(
-    public destinationService: DestinationService,
-    private router: Router,
-    private sortService: SortService
-  ) {}
+  constructor(public destinationService: DestinationService,
+              private router: Router,
+              private sortService: SortService) {
+  }
 
   ngOnInit() {
     this.getDestinations();
@@ -45,22 +44,19 @@ export class DestinationComponent implements OnInit {
     this.destinationService.getAll(this.sortService.getSortFor(nameField))
       .subscribe(
         destinations => this.destinations = destinations,
-        error => this.errorMessage = <any>error
+        error => this.errorMessage = error
       );
   }
 
-  addDestination(destination: Destination)  {
+  addDestination(destination: Destination) {
     this.destinationService.create(destination)
-      .then(this.getDestinations.bind(this))
-      .catch(err => {
-        this.errorMessage = <any>err;
-        setTimeout(() => this.errorMessage = '', 1000);
-      });
-
+      .subscribe(
+        res => this.getDestinations(),
+        err => this.errorMessage = err
+      );
   }
 
-  selectDestination(destination: Destination){
-    // this.selectedDestination = destination;
+  selectDestination(destination: Destination) {
     this.router.navigate([destination.url]);
   }
 
@@ -73,7 +69,6 @@ export class DestinationComponent implements OnInit {
   getSortClass(): string {
     return this.sortService.getSortFor(nameField).order ? this.sortService.getSortFor(nameField).order : ''
   }
-
 
 
 }

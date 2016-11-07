@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
 import {Http, Response, RequestOptions, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-
 import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/toPromise';
+
 import {Constants} from "../config/app.constants";
 import {Sort} from "../util/sort";
+import {Config} from "../config/env.config";
 
-const endpoint = 'destinations';
-const apiUrl = '/api';
+// const endpoint = 'destinations';
+// const apiUrl = '/api';
+const apiUrl = Config.API;
+const endpoint = 'destination';
 
 @Injectable()
 export class DestinationService {
@@ -24,36 +26,41 @@ export class DestinationService {
    */
   getAll(sort: Sort): Observable<Destination[]> {
     if(sort && sort.order) {
-      this.options.headers.append(Constants.headers.xOrder, `${sort.field}:${sort.order}`);
+      this.options.headers.set(Constants.headers.xOrder, `${sort.order}`);
+    } else {
+      if(this.options.headers.get(Constants.headers.xOrder)) {
+        this.options.headers.delete(Constants.headers.xOrder);
+      }
     }
 
     return this.http.get(`${apiUrl}/${endpoint}`, this.options)
-      .map((res: Response) => res.json().data);
+      .map((res: Response) => res.json())
+      .catch(this.handleError);
   }
 
-  getOne(id: number): Promise<Destination> {
+  getOne(id: number): Observable<Destination> {
     return this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .toPromise()
-      .then((res: Response) => res.json().data);
+      .map((res: Response) => res.json())
+      .catch(this.handleError);
   }
 
-  create(destination: Destination): Promise<Response> {
+  create(destination: Destination): Observable<Response> {
     this.deleteProperties(destination);
     return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(destination), this.options)
-      .toPromise();
+      .catch(this.handleError);
   }
 
-  update(destination: Destination): Promise<Response> {
+  update(destination: Destination): Observable<Response> {
     const id = destination.id;
     this.deleteProperties(destination);
 
     return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(destination), this.options)
-      .toPromise()
+      .catch(this.handleError);
   }
 
-  remove(id: number): Promise<Response> {
+  remove(id: number): Observable<Response> {
     return this.http.delete(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .toPromise();
+      .catch(this.handleError);
   }
 
   private deleteProperties(destination: Destination) {
@@ -66,7 +73,6 @@ export class DestinationService {
     // We'd also dig deeper into the error to getAll a better message
     let errMsg = (error.message) ? error.message :
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-    console.error(errMsg); // log to console instead
     return Observable.throw(errMsg);
   }
 

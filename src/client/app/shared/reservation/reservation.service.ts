@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
 import {Http, Response, RequestOptions, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-
 import 'rxjs/add/observable/throw';
+
 import {Config} from "../config/env.config";
-import 'rxjs/add/operator/toPromise';
 import {reservationStates} from "../../reservation/reservation-states";
 import {Constants} from "../config/app.constants";
 import {FlightService} from "../flight/flight.service";
-import {reservations} from "../../reservation/reservation.mock";
 
-const endpoint = 'reservations';
-const apiUrl = '/app';
+// const endpoint = 'reservations';
+// const apiUrl = '/app';
+const apiUrl = Config.API;
+const endpoint = 'reservation';
 
 @Injectable()
 export class ReservationService {
@@ -25,10 +25,10 @@ export class ReservationService {
     this.options = new RequestOptions({headers: this.createHeaders()});
   }
 
-  getAll(): Promise<any> {
+  getAll(): Observable<any> {
 
     return Observable.forkJoin(
-      this.http.get(`${apiUrl}/${endpoint}`, this.options).map((res: Response) => res.json().data),
+      this.http.get(`${apiUrl}/${endpoint}`, this.options).map((res: Response) => res.json()),
       this.flightService.getAll(null, null, null)
       )
       .map(res => {
@@ -43,13 +43,14 @@ export class ReservationService {
 
         return [reservations, flights];
       })
-      .toPromise();
+      .catch(this.handleError);
   }
 
-  // TODO pridat hlavicku: X-Password, jak se user dozvi id pro zobrazeni, kdyz nemuze listovat?
-  getOne(id: number): Promise<Reservation> {
+  // TODO pridat hlavicku: X-Password
+  getOne(id: number): Observable<Reservation> {
+
     return Observable.forkJoin(
-      this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options).map((res: Response) => res.json().data),
+      this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options).map((res: Response) => res.json()),
       this.flightService.getAll(null, null, null)
       )
       .map(res => {
@@ -62,17 +63,18 @@ export class ReservationService {
 
         return reservation;
       })
-      .toPromise();
+      .catch(this.handleError);
   }
 
-  create(reservation: Reservation): Promise<Response> {
+  create(reservation: Reservation): Observable<Reservation> {
     this.deleteProperties(reservation);
     delete reservation.state; // na serveru prirazen stav NEW
     return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(reservation), this.options)
-      .toPromise();
+      .map((res: Response) => res.json())
+      .catch(this.handleError);
   }
 
-  update(reservation: Reservation): Promise<Response> {
+  update(reservation: Reservation): Observable<Response> {
     const id = reservation.id;
     const password: string = reservation.password;
     this.deleteProperties(reservation);
@@ -81,17 +83,17 @@ export class ReservationService {
     this.options.headers.append(Constants.headers.xPassword, password);
 
     return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(reservation), this.options)
-      .toPromise()
+      .catch(this.handleError);
   }
 
-  remove(id: number): Promise<Response> {
+  remove(id: number): Observable<Response> {
     return this.http.delete(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .toPromise();
+      .catch(this.handleError);
   }
 
-  pay(id: number): Promise<Response> {
-    return this.http.post(`${apiUrl}/${endpoint}/${id}/payment`, JSON.stringify({cardNumber: 1234567812345678}), this.options)
-      .toPromise();
+  pay(id: number): Observable<Response> {
+    return this.http.post(`${apiUrl}/${endpoint}/${id}/payment`, JSON.stringify({cardNo: '1234567812345678'}), this.options)
+      .catch(this.handleError);
   }
 
   private deleteProperties(reservation: Reservation) {

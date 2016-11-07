@@ -21,7 +21,7 @@
       <td>
         <label>
           <span>Departure date</span>
-          <input type="text" formControlName="dateOfDeparture" placeholder="2016-11-10T14:48:00" />
+          <input type="text" formControlName="dateOfDeparture" [placeholder]="datetimePlaceholder" />
         </label>
         <div class="error" *ngIf="flightFG.get('dateOfDeparture').hasError('required') && flightFG.get('dateOfDeparture').touched">
           Departure date is required

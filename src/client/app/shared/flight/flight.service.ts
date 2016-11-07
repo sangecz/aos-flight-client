@@ -2,15 +2,16 @@ import {Injectable} from '@angular/core';
 import {Http, Response, RequestOptions, Headers} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/toPromise';
 
 import {Constants} from "../config/app.constants";
 import {Pagination, DepartureFilter, Sort} from "../util";
 import {DestinationService} from "../destination/destination.service";
+import {Config} from "../config/env.config";
 
-const endpoint = 'flights';
-const apiUrl = '/api';
+// const endpoint = 'flights';
+// const apiUrl = '/api';
+const apiUrl = Config.API;
+const endpoint = 'flight';
 
 @Injectable()
 export class FlightService {
@@ -27,70 +28,91 @@ export class FlightService {
    */
   getAll(sort: Sort, filter: DepartureFilter, pagination: Pagination): Observable<any[]> {
     if (sort && sort.order) {
-      this.options.headers.append(Constants.headers.xOrder, `${sort.field}:${sort.order}`);
+      this.options.headers.set(Constants.headers.xOrder, `${sort.field}:${sort.order}`);
+    } else {
+      if (this.options.headers.get(Constants.headers.xOrder)) {
+        this.options.headers.delete(Constants.headers.xOrder);
+      }
     }
 
     if (filter && filter.from && filter.to) {
-      this.options.headers.append(Constants.headers.xFilter, `dateOfDepartureFrom=${filter.from},dateOfDepartureTo=${filter.to}`);
+      this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${filter.from},dateOfDepartureTo=${filter.to}`);
+    } else {
+      if (this.options.headers.get(Constants.headers.xFilter)) {
+        this.options.headers.delete(Constants.headers.xFilter);
+      }
     }
 
-    if (pagination && pagination.base && pagination.offset) {
-      this.options.headers.append(Constants.headers.xBase, pagination.base + '');
-      this.options.headers.append(Constants.headers.xOffset, pagination.offset + '');
+    if (pagination && pagination.base) {
+      this.options.headers.set(Constants.headers.xBase, pagination.base + '');
+      this.options.headers.set(Constants.headers.xOffset, (pagination.offset) + '');
+    } else {
+      if (this.options.headers.get(Constants.headers.xBase)) {
+        this.options.headers.delete(Constants.headers.xBase);
+      }
+      if (this.options.headers.get(Constants.headers.xOffset)) {
+        this.options.headers.delete(Constants.headers.xOffset);
+      }
     }
 
-    const totalCount = 13;
+    let totalCount: number;
 
     return Observable.forkJoin(
-      this.http.get(`${apiUrl}/${endpoint}`, this.options).map((res: Response) => res.json().data),
+      this.http.get(`${apiUrl}/${endpoint}`, this.options)
+        .map((res: Response) => {
+          totalCount = +res.headers.get(Constants.headers.xCount);
+          return res.json();
+        }),
       this.destinationService.getAll(null)
       )
       .map(res => {
         let flights: Flight[] = res[0];
+
         let destinations: Destination[] = res[1];
 
         flights.forEach((f: Flight) => {
           destinations.forEach(d => {
-            if(f.from === d.id) f.fromName = d.name;
-            if(f.to === d.id) f.toName = d.name;
+            if (f.from === d.id) f.fromName = d.name;
+            if (f.to === d.id) f.toName = d.name;
           });
         });
 
         return flights;
       })
-      .map((res) => [res, totalCount]);
+      .map((res) => [res, totalCount])
+      .catch(this.handleError);
   }
 
-  getOne(id: number): Promise<Flight> {
+  getOne(id: number): Observable<Flight> {
     return this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .toPromise()
-      .then((res: Response) => res.json().data);
+      .map((res: Response) => res.json())
+      .catch(this.handleError);
   }
 
-  create(flight: Flight): Promise<Response> {
+  create(flight: Flight): Observable<Response> {
     this.deleteProperties(flight);
     return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(flight), this.options)
-      .toPromise();
+      .catch(this.handleError);
   }
 
-  update(flight: Flight): Promise<Response> {
+  update(flight: Flight): Observable<Response> {
     const id = flight.id;
     this.deleteProperties(flight);
 
     return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(flight), this.options)
-      .toPromise()
+      .catch(this.handleError);
   }
 
-  remove(id: number): Promise<Response> {
+  remove(id: number): Observable<Response> {
     return this.http.delete(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .toPromise();
+      .catch(this.handleError);
   }
 
   private deleteProperties(flight: Flight) {
-    delete flight.id; // FIXME posilat pouze, kdyz je zaroven vytvorena destination
+    delete flight.id; // ***FIXME posilat pouze, kdyz je zaroven vytvorena destination
     delete flight.url;
-    delete flight.distance;
-    delete flight.price;
+    // delete flight.distance;
+    // delete flight.price;
     delete flight.fromName;
     delete flight.toName;
   }

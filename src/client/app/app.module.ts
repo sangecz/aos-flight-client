@@ -19,7 +19,7 @@ import {FlightModule} from "./flight/flight.module";
   imports: [
     BrowserModule,
     HttpModule,
-    InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 500 }),
+    // InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 500 }),
     RouterModule.forRoot(routes),
     AboutModule,
     HomeModule,

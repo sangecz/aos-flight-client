@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {FlightService} from "../shared/flight/flight.service";
 import {SortService} from "../shared/util/sort.service";
@@ -14,20 +14,20 @@ import {Pagination} from "../shared/util/pagination";
 })
 export class FlightComponent implements OnInit {
 
+  errorMessage: string;
   orderValue: number = 0;
   departureField = 'dateOfDeparture';
   nameField = 'name';
   sorts: Sort[] = [
-    { order: null, field: this.nameField},
-    { order: null, field: this.departureField}
+    {order: null, field: this.nameField},
+    {order: null, field: this.departureField}
   ];
-  selectedSortField = this.departureField;
 
+  selectedSortField = this.departureField;
   filter: DepartureFilter;
   pagination: Pagination;
-  recordCount = 0;
 
-  errorMessage: string;
+  recordCount = 0;
   flights: any[] = [];
   selectedFlight: Flight = {
     id: null,
@@ -41,11 +41,10 @@ export class FlightComponent implements OnInit {
     url: null
   };
 
-  constructor(
-    public flightService: FlightService,
-    private router: Router,
-    private sortService: SortService
-  ) {}
+  constructor(public flightService: FlightService,
+              private router: Router,
+              private sortService: SortService) {
+  }
 
   ngOnInit() {
     this.getFlights();
@@ -60,27 +59,25 @@ export class FlightComponent implements OnInit {
           this.flights = res[0];
           this.recordCount = res[1];
         },
-        (error) => this.errorMessage = <any>error
+        (error) => this.errorMessage = error
       );
   }
 
-  addFlight(flight: Flight)  {
+  addFlight(flight: Flight) {
     this.flightService.create(flight)
-      .then(this.getFlights.bind(this))
-      .catch(err => {
-        this.errorMessage = <any>err;
-        setTimeout(() => this.errorMessage = '', 1000);
-      });
+      .subscribe(
+        res => this.getFlights(),
+        err => this.errorMessage = err
+      );
 
   }
 
-  selectFlight(flight: Flight){
-    // this.selectedFlight = flight;
+  selectFlight(flight: Flight) {
     this.router.navigate([flight.url]);
   }
 
   changeSort(field: string) {
-    if(field !== this.selectedSortField) {
+    if (field !== this.selectedSortField) {
       this.selectedSortField = field;
       this.orderValue = 0;
     }
@@ -91,14 +88,14 @@ export class FlightComponent implements OnInit {
 
   getSortClass(field: string): string {
     const sort: Sort = this.sortService.getSortFor(field);
-    return  sort && sort.order ? sort.order : ''
+    return sort && sort.order ? sort.order : ''
   }
 
   getFilterClass(): string {
     return this.filter && this.filter.from && this.filter.to ? 'cross' : '';
   }
 
-  paginationChanged(pagination: Pagination){
+  paginationChanged(pagination: Pagination) {
     this.pagination = pagination;
     this.getFlights();
   }

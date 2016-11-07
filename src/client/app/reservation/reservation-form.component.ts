@@ -5,6 +5,7 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
 import {Constants} from "../shared/config/app.constants";
 import {FlightService} from "../shared/flight/flight.service";
+import {AuthService} from "../shared/auth/auth.service";
 
 const emptyReservation: any = {
   name: null,
@@ -12,6 +13,7 @@ const emptyReservation: any = {
   lon: null
 };
 
+//
 // TODO pridat password pro getOne/update
 @Component({
   moduleId: module.id,
@@ -21,8 +23,6 @@ const emptyReservation: any = {
 })
 export class ReservationFormComponent implements OnInit {
 
-  // FIXME role
-  private isAdmin: boolean = true;
   private reservationFG: FormGroup;
   private reservationValue: Reservation;
   private detail: boolean = false;
@@ -31,14 +31,18 @@ export class ReservationFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private flightService: FlightService
+    private flightService: FlightService,
+    private authService: AuthService
   ) {
+    this.createForm();
+  }
+
+  private createForm() {
     this.reservationFG = this.fb.group({
       flight: ['', [Validators.required]],
       seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
       created: ['', []],
-      state: ['', []],
-      password: ['', []]
+      state: ['', []]
     });
   }
 
@@ -56,8 +60,7 @@ export class ReservationFormComponent implements OnInit {
         flight: val.flight,
         seats: val.seats,
         created: val.created,
-        state: val.state,
-        password: ''
+        state: val.state
       });
     }
   }
@@ -69,7 +72,7 @@ export class ReservationFormComponent implements OnInit {
   ngOnInit(): void {
     this.getFlights();
     if(this.detail) {
-      this.submitTxt = 'Proceed';
+      this.submitTxt = 'Cancel reservation';
 
       this.reservationFG.reset({
         flight: {value: '', disabled: true},
@@ -78,22 +81,20 @@ export class ReservationFormComponent implements OnInit {
         state: {value: '', disabled: true}
       });
 
-      if(!this.isAdmin) {
-        this.reservationFG.get('password').setValidators([Validators.required, Validators.minLength(3)]);
-      }
-
     } else {
       this.submitTxt = 'Save';
     }
   }
 
   onSubmit() {
-    if (this.reservationFG.valid) {
-      console.log(+this.reservationFG.value.flight);
+    if (!this.reservationFG.invalid) {
       this.reservationValue.flight = +this.reservationFG.value.flight;
       this.reservationValue.seats = +this.reservationFG.value.seats;
-      this.reservationValue.password = this.reservationFG.value.password;
+
       this.onReservationChange.emit(this.reservationValue);
+      if(!this.detail){
+        this.createForm();
+      }
     }
   }
 
@@ -111,7 +112,7 @@ export class ReservationFormComponent implements OnInit {
         res => {
           this._flights = res[0];
 
-          if(!this.detail && this._flights.length > 0) {
+          if(!this.detail && this._flights.length > 0 && !this.detail) {
             this.reservationFG.get('flight').setValue(this._flights[0].id);
           }
         },

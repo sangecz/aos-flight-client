@@ -15,3 +15,7 @@ input[type="text"], input[type="number"], input[type="password"], input[type="da
 td {
   width: 330px;
 }
+
+table {
+  background-color: #efefef;
+}
