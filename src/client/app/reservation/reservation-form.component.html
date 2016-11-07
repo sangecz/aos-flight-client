@@ -51,8 +51,8 @@
 
     <tr>
       <td>
-        <button type="submit" [disabled]="reservationFG.invalid">{{submitTxt}}</button>
-        <button *ngIf="detail" type="button" (click)="remove()">Delete</button>
+        <button *ngIf="showSubmitBtn()" type="submit" [disabled]="reservationFG.invalid">{{submitTxt}}</button>
+        <button *ngIf="showDeleteBtn()" type="button" (click)="remove()">Delete</button>
         <button *ngIf="detail" type="button" (click)="back()">Back</button>
       </td>
     <tr>

@@ -35,8 +35,15 @@ export class FlightService {
       }
     }
 
-    if (filter && filter.from && filter.to) {
-      this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${filter.from},dateOfDepartureTo=${filter.to}`);
+    // FIXME server 500 pritom pri create/update JSON.stringify na date projde
+    if (filter && (filter.from || filter.to)) {
+      if(filter.from && filter.to) {
+        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${JSON.stringify(filter.from)},dateOfDepartureTo=${JSON.stringify(filter.to)}`);
+      } else if (filter.from && !filter.to) {
+        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${JSON.stringify(filter.from)}`);
+      } else if (!filter.from && filter.to){
+        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureTo=${JSON.stringify(filter.to)}`);
+      }
     } else {
       if (this.options.headers.get(Constants.headers.xFilter)) {
         this.options.headers.delete(Constants.headers.xFilter);
@@ -118,12 +125,8 @@ export class FlightService {
   }
 
   private handleError(error: any) {
-    // In a real world app, we might use a remote logging infrastructure
-    // We'd also dig deeper into the error to getAll a better message
-    let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-    console.error(errMsg); // log to console instead
-    return Observable.throw(errMsg);
+    let errMsg = (error.message) ? error.message : error.status;
+    return Observable.throw('Error: ' + errMsg);
   }
 
   private createHeaders() {

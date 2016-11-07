@@ -30,8 +30,8 @@ export class DepartureFilterComponent implements OnInit {
 
   private createForm() {
     this.filterFG = this.fb.group({
-      from: ['', [Validators.required, validateDateTime()]],
-      to: ['', [Validators.required, validateDateTime()]]
+      from: ['', [validateDateTime(true)]],
+      to: ['', [validateDateTime(true)]]
     });
   }
 
@@ -46,15 +46,24 @@ export class DepartureFilterComponent implements OnInit {
 
   clearFilter(){
     this.createForm();
-    this.applyFilter();
-  }
-
-  applyFilter() {
     let filter: DepartureFilter = {
-      from: Util.getISODatetimeString(this.filterFG.get('from').value),
-      to: Util.getISODatetimeString(this.filterFG.get('to').value)
+      from: null,
+      to: null
     };
     this.onDepartureFilterChange.emit(filter);
   }
 
+  applyFilter() {
+    const from = this.filterFG.get('from').value;
+    const to = this.filterFG.get('to').value;
+    let filter: DepartureFilter = {
+      from: !isNaN(new Date(from).getTime())? new Date(from) : null,
+      to: !isNaN(new Date(to).getTime()) ? new Date(to) : null
+    };
+    this.onDepartureFilterChange.emit(filter);
+  }
+
+  disableApply(): boolean {
+    return this.filterFG.invalid || (!this.filterFG.get('from').value && !this.filterFG.get('to').value);
+  }
 }

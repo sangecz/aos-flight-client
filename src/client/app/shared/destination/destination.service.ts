@@ -69,11 +69,8 @@ export class DestinationService {
   }
 
   private handleError(error: any) {
-    // In a real world app, we might use a remote logging infrastructure
-    // We'd also dig deeper into the error to getAll a better message
-    let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-    return Observable.throw(errMsg);
+    let errMsg = (error.message) ? error.message : error.status;
+    return Observable.throw('Error: ' + errMsg);
   }
 
   private createHeaders() {

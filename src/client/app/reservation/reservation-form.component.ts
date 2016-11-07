@@ -6,6 +6,7 @@ import {FormGroup, Validators, FormBuilder} from "@angular/forms";
 import {Constants} from "../shared/config/app.constants";
 import {FlightService} from "../shared/flight/flight.service";
 import {AuthService} from "../shared/auth/auth.service";
+import {reservationStates} from "./reservation-states";
 
 const emptyReservation: any = {
   name: null,
@@ -120,5 +121,19 @@ export class ReservationFormComponent implements OnInit {
       );
   }
 
+  showSubmitBtn(): boolean {
+    if(!this.detail) {
+      return true;
+    }
+
+    return this.reservationValue && this.reservationValue.state === reservationStates.NEW;
+  }
+
+  showDeleteBtn(): boolean {
+    if(!this.detail) {
+      return false;
+    }
+    return this.reservationValue && this.reservationValue.state !== reservationStates.PAID;
+  }
 
 }

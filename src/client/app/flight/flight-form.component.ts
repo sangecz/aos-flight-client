@@ -31,7 +31,7 @@ export class FlightFormComponent implements OnInit {
   private createForm() {
     this.flightFG = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      dateOfDeparture: ['', [Validators.required, validateDateTime()]],
+      dateOfDeparture: ['', [Validators.required, validateDateTime(false)]],
       seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
       from: ['', [Validators.required]],
       to: ['', [Validators.required]]
