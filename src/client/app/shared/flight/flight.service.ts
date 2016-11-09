@@ -35,14 +35,19 @@ export class FlightService {
       }
     }
 
-    // FIXME server 500 pritom pri create/update JSON.stringify na date projde
     if (filter && (filter.from || filter.to)) {
+      let from = JSON.stringify(filter.from);
+      let to = JSON.stringify(filter.to);
+      from = from.slice(1, from.length - 1);
+      to = to.slice(1, to.length - 1);
+      console.log(11111, to === filter.to.toISOString());
+
       if(filter.from && filter.to) {
-        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${JSON.stringify(filter.from)},dateOfDepartureTo=${JSON.stringify(filter.to)}`);
+        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${from},dateOfDepartureTo=${to}`);
       } else if (filter.from && !filter.to) {
-        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${JSON.stringify(filter.from)}`);
+        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${from}`);
       } else if (!filter.from && filter.to){
-        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureTo=${JSON.stringify(filter.to)}`);
+        this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureTo=${to}`);
       }
     } else {
       if (this.options.headers.get(Constants.headers.xFilter)) {
@@ -116,7 +121,7 @@ export class FlightService {
   }
 
   private deleteProperties(flight: Flight) {
-    delete flight.id; // ***FIXME posilat pouze, kdyz je zaroven vytvorena destination
+    delete flight.id;
     delete flight.url;
     // delete flight.distance;
     // delete flight.price;

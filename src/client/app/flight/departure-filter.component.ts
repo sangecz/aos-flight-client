@@ -63,7 +63,9 @@ export class DepartureFilterComponent implements OnInit {
     this.onDepartureFilterChange.emit(filter);
   }
 
-  disableApply(): boolean {
-    return this.filterFG.invalid || (!this.filterFG.get('from').value && !this.filterFG.get('to').value);
+  enableApply(): boolean {
+    const ret = this.filterFG.valid && (this.filterFG.get('from').value !== '' || this.filterFG.get('to').value !== '');
+    console.log(ret);
+    return !ret;
   }
 }
