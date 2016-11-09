@@ -92,7 +92,7 @@ export class FlightComponent implements OnInit {
   }
 
   getFilterClass(): string {
-    return this.filter && this.filter.from && this.filter.to ? 'cross' : '';
+    return this.filter && (this.filter.from || this.filter.to) ? 'cross' : '';
   }
 
   paginationChanged(pagination: Pagination) {

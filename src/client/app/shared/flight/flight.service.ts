@@ -40,7 +40,6 @@ export class FlightService {
       let to = JSON.stringify(filter.to);
       from = from.slice(1, from.length - 1);
       to = to.slice(1, to.length - 1);
-      console.log(11111, to === filter.to.toISOString());
 
       if(filter.from && filter.to) {
         this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${from},dateOfDepartureTo=${to}`);

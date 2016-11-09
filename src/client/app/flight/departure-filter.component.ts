@@ -60,12 +60,12 @@ export class DepartureFilterComponent implements OnInit {
       from: !isNaN(new Date(from).getTime())? new Date(from) : null,
       to: !isNaN(new Date(to).getTime()) ? new Date(to) : null
     };
+    console.log();
     this.onDepartureFilterChange.emit(filter);
   }
 
-  enableApply(): boolean {
-    const ret = this.filterFG.valid && (this.filterFG.get('from').value !== '' || this.filterFG.get('to').value !== '');
-    console.log(ret);
-    return !ret;
+  disableApply(): boolean {
+    // const ret = this.filterFG.valid && (this.filterFG.get('from').value !== '' || this.filterFG.get('to').value !== '');
+    return false;
   }
 }
