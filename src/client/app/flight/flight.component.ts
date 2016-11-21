@@ -73,7 +73,7 @@ export class FlightComponent implements OnInit {
   }
 
   selectFlight(flight: Flight) {
-    this.router.navigate([flight.url]);
+    this.router.navigate(['/client/flight', flight.id]);
   }
 
   changeSort(field: string) {

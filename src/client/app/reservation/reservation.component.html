@@ -7,7 +7,7 @@
 <div [hidden]="!createdReservation">
   <!-- TODO pouzit heslo pro vstup do rezervace -->
   <h5>Last created reservation:</h5>
-  <a href="#" routerLink="/reservation/{{createdReservation && createdReservation.id}}">reservation link</a><br/>
+  <a href="#" routerLink="/client/reservation/{{createdReservation?.id}}">reservation link</a><br/>
   <span> password: {{createdReservation && createdReservation.password}}</span>
 </div>
 

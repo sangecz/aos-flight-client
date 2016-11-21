@@ -62,7 +62,7 @@ export class ReservationDetailComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate(['/reservation']);
+    this.router.navigate(['/client/reservation']);
   }
 
   showPayBtn(): boolean{

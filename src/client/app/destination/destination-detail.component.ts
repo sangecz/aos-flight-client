@@ -53,7 +53,7 @@ export class DestinationDetailComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate(['/destination']);
+    this.router.navigate(['/client/destination']);
   }
 
 }

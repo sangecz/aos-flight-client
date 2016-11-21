@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Http, Response, RequestOptions, Headers} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
-import {Constants} from "../config/app.constants";
-import {Pagination, DepartureFilter, Sort} from "../util";
-import {DestinationService} from "../destination/destination.service";
-import {Config} from "../config/env.config";
+import { Constants } from "../config/app.constants";
+import { Pagination, DepartureFilter, Sort } from "../util";
+import { DestinationService } from "../destination/destination.service";
+import { Config } from "../config/env.config";
 
 // const endpoint = 'flights';
 // const apiUrl = '/api';
@@ -41,11 +41,11 @@ export class FlightService {
       from = from.slice(1, from.length - 1);
       to = to.slice(1, to.length - 1);
 
-      if(filter.from && filter.to) {
+      if (filter.from && filter.to) {
         this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${from},dateOfDepartureTo=${to}`);
       } else if (filter.from && !filter.to) {
         this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureFrom=${from}`);
-      } else if (!filter.from && filter.to){
+      } else if (!filter.from && filter.to) {
         this.options.headers.set(Constants.headers.xFilter, `dateOfDepartureTo=${to}`);
       }
     } else {

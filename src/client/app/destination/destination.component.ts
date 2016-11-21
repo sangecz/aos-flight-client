@@ -57,7 +57,7 @@ export class DestinationComponent implements OnInit {
   }
 
   selectDestination(destination: Destination) {
-    this.router.navigate([destination.url]);
+    this.router.navigate(['/client/destination', destination.id]);
   }
 
   changeSort() {

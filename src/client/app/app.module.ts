@@ -11,8 +11,8 @@ import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
 import {DestinationModule} from "./destination/destination.module";
 import {ReservationModule} from "./reservation/reservation.module";
-import {InMemoryDataService} from "./in-memory-data.service";
-import {InMemoryWebApiModule} from "angular2-in-memory-web-api";
+// import {InMemoryDataService} from "./in-memory-data.service";
+// import {InMemoryWebApiModule} from "angular2-in-memory-web-api";
 import {FlightModule} from "./flight/flight.module";
 
 @NgModule({

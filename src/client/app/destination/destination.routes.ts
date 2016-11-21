@@ -4,11 +4,11 @@ import {DestinationDetailComponent} from "./destination-detail.component";
 
 export const DestinationRoutes: Route[] = [
   {
-    path: 'destination',
+    path: 'client/destination',
     component: DestinationComponent
   },
   {
-    path: 'destination/:id',
+    path: 'client/destination/:id',
     component: DestinationDetailComponent
   }
 ];

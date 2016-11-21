@@ -57,7 +57,7 @@ export class ReservationComponent implements OnInit {
 
   selectReservation(reservation: Reservation){
     // this.selectedReservation = reservation;
-    this.router.navigate([reservation.url]);
+    this.router.navigate(['/client/reservation', reservation.id]);
   }
 
 }

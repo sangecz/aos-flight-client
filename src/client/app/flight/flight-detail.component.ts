@@ -52,7 +52,7 @@ export class FlightDetailComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate(['/flight']);
+    this.router.navigate(['/client/flight']);
   }
 
 }

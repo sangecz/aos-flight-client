@@ -4,11 +4,11 @@ import {ReservationComponent} from "./reservation.component";
 
 export const ReservationRoutes: Route[] = [
   {
-    path: 'reservation',
+    path: 'client/reservation',
     component: ReservationComponent
   },
   {
-    path: 'reservation/:id',
+    path: 'client/reservation/:id',
     component: ReservationDetailComponent
   }
 ];

@@ -4,11 +4,11 @@ import {FlightComponent} from "./flight.component";
 
 export const FlightRoutes: Route[] = [
   {
-    path: 'flight',
+    path: 'client/flight',
     component: FlightComponent
   },
   {
-    path: 'flight/:id',
+    path: 'client/flight/:id',
     component: FlightDetailComponent
   }
 ];
