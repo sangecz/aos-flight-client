@@ -45,7 +45,7 @@ export class FlightFormComponent implements OnInit {
 
   @Input()
   set flight(val: Flight) {
-    this.flightValue = val;
+    this.flightValue = val || Object.assign({});
 
     if (val && val.name && val.dateOfDeparture && val.seats && val.from && val.to) {
       this.flightFG.setValue({

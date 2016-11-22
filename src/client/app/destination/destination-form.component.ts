@@ -4,12 +4,6 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
 
-const emptyDestination: any = {
-  name: null,
-  lat: null,
-  lon: null
-};
-
 @Component({
   moduleId: module.id,
   selector: 'destination-form',
@@ -43,7 +37,8 @@ export class DestinationFormComponent implements OnInit {
 
   @Input()
   set destination(val: Destination) {
-    this.destinationValue = val;
+
+    this.destinationValue = val || Object.assign({});
 
     if (val && val.name && val.lat && val.lon) {
       this.destinationFG.setValue({

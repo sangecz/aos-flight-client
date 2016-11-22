@@ -362,8 +362,6 @@ export class SeedConfig {
         'node_modules/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic-testing.umd.js',
       '@angular/router/testing': 'node_modules/@angular/router/bundles/router-testing.umd.js',
 
-      'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api/index.js',
-
       'app/*': '/app/*',
       // For test config
       'dist/dev/*': '/base/dist/dev/*',

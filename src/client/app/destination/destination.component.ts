@@ -1,47 +1,45 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { Router } from "@angular/router";
 
-import {DestinationService} from '../shared/index';
-import {SortService} from "../shared/util/sort.service";
-
-const nameField = 'name';
+import { DestinationService } from '../shared/index';
+import { SortService } from "../shared/sort/sort.service";
+import { Sort } from '../shared/sort/sort';
 
 @Component({
   moduleId: module.id,
   selector: 'sd-destination',
-  templateUrl: 'destination.component.html',
-  styleUrls: ['destination.component.css'],
+  template: `
+    <h2>Add destination</h2>
+    <destination-form [destination]="selectedDestination" (onDestinationChange)="addDestination($event)"></destination-form>
+    
+    <error-message [errorMessage]="errorMessage"></error-message>
+    
+    <destination-list
+      [destinations]="destinations"
+      (destinationSelected)="selectDestination($event)"
+      (sortChanged)="sortChanged($event)"
+    ></destination-list>`
 })
 export class DestinationComponent implements OnInit {
 
   errorMessage: string;
-  /**
-   * 0 == no sort
-   * 1 == asc
-   * 2 == desc
-   */
-  private orderValue: number = 0;
-  destinations: any[] = [];
-  selectedDestination: Destination = {
-    name: null,
-    lat: null,
-    lon: null,
-    url: null,
-    id: null
-  };
+  destinations: Destination[];
+  selectedDestination: Destination;
 
   constructor(public destinationService: DestinationService,
               private router: Router,
-              private sortService: SortService) {
+              private sortService: SortService
+  ) {
   }
 
   ngOnInit() {
     this.getDestinations();
-    this.sortService.setSorts({order: null, field: 'name'});
+    // this.sortService.setSorts({order: null, field: sortNameField});
   }
 
   getDestinations() {
-    this.destinationService.getAll(this.sortService.getSortFor(nameField))
+    // this.destinationService.getAll(this.sortService.getSortFor(sortNameField))
+    this.destinationService.getAll(null) //FIXME ngrx sorting shit
       .subscribe(
         destinations => this.destinations = destinations,
         error => this.errorMessage = error
@@ -60,15 +58,7 @@ export class DestinationComponent implements OnInit {
     this.router.navigate(['/client/destination', destination.id]);
   }
 
-  changeSort() {
-    this.orderValue = (this.orderValue + 1) % 3;
-    this.sortService.changeOrderFor(nameField, this.orderValue);
+  sortChanged() {
     this.getDestinations();
   }
-
-  getSortClass(): string {
-    return this.sortService.getSortFor(nameField).order ? this.sortService.getSortFor(nameField).order : ''
-  }
-
-
 }

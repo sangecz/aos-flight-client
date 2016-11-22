@@ -8,7 +8,7 @@ import {NavbarComponent} from './navbar/index';
 import {DestinationService} from './destination/index';
 import {ReservationService} from "./reservation/reservation.service";
 import {FlightService} from "./flight/flight.service";
-import {SortService} from "./util/sort.service";
+import {SortService} from "./sort/sort.service";
 import {PaginationComponent} from "./pagination/pagination.component";
 import {AuthService} from "./auth/auth.service";
 import {ErrorMessageComponent} from "./error-message/error-message.component";

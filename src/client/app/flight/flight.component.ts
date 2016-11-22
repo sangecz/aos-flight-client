@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {FlightService} from "../shared/flight/flight.service";
-import {SortService} from "../shared/util/sort.service";
-import {Sort} from "../shared/util/sort";
-import {DepartureFilter} from "../shared/util/filter";
-import {Pagination} from "../shared/util/pagination";
+import {SortService} from "../shared/sort/sort.service";
+import {Sort} from "../shared/sort/sort";
+import {DepartureFilter} from "../shared/filter/filter";
+import {Pagination} from "../shared/pagination/pagination";
 
 @Component({
   moduleId: module.id,
@@ -29,17 +29,7 @@ export class FlightComponent implements OnInit {
 
   recordCount = 0;
   flights: any[] = [];
-  selectedFlight: Flight = {
-    id: null,
-    name: null,
-    dateOfDeparture: null,
-    distance: null,
-    seats: null,
-    price: null,
-    from: null,
-    to: null,
-    url: null
-  };
+  selectedFlight: Flight;
 
   constructor(public flightService: FlightService,
               private router: Router,

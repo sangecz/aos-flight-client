@@ -4,9 +4,11 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
 import { Constants } from "../config/app.constants";
-import { Pagination, DepartureFilter, Sort } from "../util";
 import { DestinationService } from "../destination/destination.service";
 import { Config } from "../config/env.config";
+import { Sort } from '../sort/sort';
+import { DepartureFilter } from '../filter/filter';
+import { Pagination } from '../pagination/pagination';
 
 // const endpoint = 'flights';
 // const apiUrl = '/api';

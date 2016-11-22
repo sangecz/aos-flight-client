@@ -3,7 +3,7 @@
  */
 
 import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
-import {Pagination} from "../util/pagination";
+import {Pagination} from "./pagination";
 
 const initPagination: Pagination = {base: 10, offset: 0};
 

@@ -3,18 +3,12 @@
  */
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
+
 import {Constants} from "../shared/config/app.constants";
 import {FlightService} from "../shared/flight/flight.service";
 import {AuthService} from "../shared/auth/auth.service";
 import {reservationStates} from "./reservation-states";
 
-const emptyReservation: any = {
-  name: null,
-  lat: null,
-  lon: null
-};
-
-//
 // TODO pridat password pro getOne/update
 @Component({
   moduleId: module.id,
@@ -54,7 +48,7 @@ export class ReservationFormComponent implements OnInit {
 
   @Input()
   set reservation(val: Reservation) {
-    this.reservationValue = val;
+    this.reservationValue = val || Object.assign({});
 
     if (val && val.flight && val.seats && val.created && val.state) {
       this.reservationFG.setValue({

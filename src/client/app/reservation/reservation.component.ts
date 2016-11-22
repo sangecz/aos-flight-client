@@ -16,15 +16,7 @@ export class ReservationComponent implements OnInit {
   errorMessage: string;
   createdReservation : Reservation;
   reservations: Reservation[] = [];
-  selectedReservation: Reservation = {
-    id: null,
-    flight: null,
-    seats: null,
-    password: null,
-    state: null,
-    created: null,
-    url: null
-  };
+  selectedReservation: Reservation;
 
   constructor(
     public reservationService: ReservationService,

@@ -14,6 +14,16 @@ export class ProjectConfig extends SeedConfig {
     super();
     this.APP_TITLE = 'AOS-FLIGHT';
 
+    this.mergeObject(this.SYSTEM_CONFIG_DEV['paths'], {
+      'immutable': 'node_modules/immutable/dist/immutable.js',
+      'optional-js': 'node_modules/optional-js/dist/optional.min.js',
+      'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api/index.js',
+      '@ngrx/core': 'node_modules/@ngrx/core/bundles/core.min.umd.js',
+      '@ngrx/store': 'node_modules/@ngrx/store/bundles/store.min.umd.js',
+      '@ngrx/store-devtools': 'node_modules/@ngrx/store-devtools/bundles/store-devtools.min.umd.js',
+      // 'traceur': 'node_modules/traceur/dist/'
+    });
+
     /* Enable typeless compiler runs (faster) between typed compiler runs. */
     // this.TYPED_COMPILE_INTERVAL = 5;
 

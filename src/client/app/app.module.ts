@@ -5,15 +5,18 @@ import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreModule } from '@ngrx/store';
 
 import { AboutModule } from './about/about.module';
 import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
 import {DestinationModule} from "./destination/destination.module";
 import {ReservationModule} from "./reservation/reservation.module";
-// import {InMemoryDataService} from "./in-memory-data.service";
 // import {InMemoryWebApiModule} from "angular2-in-memory-web-api";
 import {FlightModule} from "./flight/flight.module";
+import { sortReducer } from './shared/sort/sort.reducer';
+import { counterReducer } from './home/counter';
 
 @NgModule({
   imports: [
@@ -26,7 +29,10 @@ import {FlightModule} from "./flight/flight.module";
     DestinationModule,
     ReservationModule,
     FlightModule,
-    SharedModule.forRoot()],
+    SharedModule.forRoot(),
+    StoreModule.provideStore({sort: sortReducer, counter: counterReducer}),
+    StoreDevtoolsModule.instrumentOnlyWithExtension()
+  ],
   declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,

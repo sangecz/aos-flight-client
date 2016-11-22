@@ -1,30 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { DestinationService } from '../shared/index';
-import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { INCREMENT, DECREMENT, RESET } from './counter';
 import { AppState } from '../app.state';
+import { INCREMENT, DECREMENT, RESET } from './counter';
 
 /**
  * This class represents the lazy loaded HomeComponent.
  */
 @Component({
   moduleId: module.id,
-  selector: 'sd-home',
+  selector: 'sub-home',
   template: `
-        <h5>main</h5>
+        <h5>sub</h5>
         <button (click)="increment()">Increment</button>
         <div>Current Count: {{ counter | async }}</div>
         <button (click)="decrement()">Decrement</button>
 
         <button (click)="reset()">Reset Counter</button>
-        
-        <hr />
-        
-        <sub-home></sub-home>
     `
 })
-export class HomeComponent {
+export class SubHomeComponent {
 
   counter: Observable<number>;
 

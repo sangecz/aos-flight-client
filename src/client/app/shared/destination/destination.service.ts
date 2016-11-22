@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
 import {Constants} from "../config/app.constants";
-import {Sort} from "../util/sort";
+import {Sort} from "../sort/sort";
 import {Config} from "../config/env.config";
 
 // const endpoint = 'destinations';

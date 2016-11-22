@@ -2,7 +2,7 @@
  * Created by sange on 05/11/2016.
  */
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {DepartureFilter} from "../shared/util/filter";
+import {DepartureFilter} from "../shared/filter/filter";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {validateDateTime} from "../shared/forms/validator";
 import {Constants} from "../shared/config/app.constants";
