@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_BASE_HREF } from '@angular/common';
+import { APP_BASE_HREF, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
@@ -16,7 +16,6 @@ import {ReservationModule} from "./reservation/reservation.module";
 // import {InMemoryWebApiModule} from "angular2-in-memory-web-api";
 import {FlightModule} from "./flight/flight.module";
 import { sortReducer } from './shared/sort/sort.reducer';
-import { counterReducer } from './home/counter';
 
 @NgModule({
   imports: [
@@ -30,14 +29,17 @@ import { counterReducer } from './home/counter';
     ReservationModule,
     FlightModule,
     SharedModule.forRoot(),
-    StoreModule.provideStore({sort: sortReducer, counter: counterReducer}),
+    StoreModule.provideStore({sort: sortReducer}),
     StoreDevtoolsModule.instrumentOnlyWithExtension()
   ],
   declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'
-  }],
+  },
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
+
+  ],
   bootstrap: [AppComponent]
 
 })

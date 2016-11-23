@@ -24,6 +24,7 @@ export class ProjectConfig extends SeedConfig {
       // 'traceur': 'node_modules/traceur/dist/'
     });
 
+
     /* Enable typeless compiler runs (faster) between typed compiler runs. */
     // this.TYPED_COMPILE_INTERVAL = 5;
 

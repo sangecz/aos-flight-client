@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { DestinationService } from '../shared/index';
 import { SortService } from "../shared/sort/sort.service";
 import { Sort } from '../shared/sort/sort';
+import { sortNameField } from '../shared/sort/sort.reducer';
 
 @Component({
   moduleId: module.id,
@@ -17,7 +18,7 @@ import { Sort } from '../shared/sort/sort';
     <destination-list
       [destinations]="destinations"
       (destinationSelected)="selectDestination($event)"
-      (sortChanged)="sortChanged($event)"
+      (sortChanged)="changeSort()"
     ></destination-list>`
 })
 export class DestinationComponent implements OnInit {
@@ -34,12 +35,11 @@ export class DestinationComponent implements OnInit {
 
   ngOnInit() {
     this.getDestinations();
-    // this.sortService.setSorts({order: null, field: sortNameField});
+    this.sortService.setSorts({order: null, field: sortNameField});
   }
 
   getDestinations() {
-    // this.destinationService.getAll(this.sortService.getSortFor(sortNameField))
-    this.destinationService.getAll(null) //FIXME ngrx sorting shit
+    this.destinationService.getAll(this.sortService.getSortFor(sortNameField))
       .subscribe(
         destinations => this.destinations = destinations,
         error => this.errorMessage = error
@@ -58,7 +58,7 @@ export class DestinationComponent implements OnInit {
     this.router.navigate(['/client/destination', destination.id]);
   }
 
-  sortChanged() {
+  changeSort() {
     this.getDestinations();
   }
 }

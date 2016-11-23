@@ -14,7 +14,7 @@ import { SortService } from '../shared/sort/sort.service';
   template: ` <h2>Destination list</h2>
               <table>
                 <tr>
-                  <th (click)="changeSort()" [ngClass]="getSortClass() | async">Name</th>
+                  <th (click)="changeSort()" [ngClass]="getSortClass()">Name</th>
                   <th>Latitude</th>
                   <th>Longitude</th>
                 </tr>
@@ -40,11 +40,18 @@ import { SortService } from '../shared/sort/sort.service';
 })
 export class DestinationListComponent implements OnInit {
 
+  /**
+   * 0 == no sort
+   * 1 == asc
+   * 2 == desc
+   */
+  private orderValue: number = 0;
+
   @Output()
   destinationSelected = new EventEmitter<Destination>();
 
   @Output()
-  sortChanged = new EventEmitter();
+  sortChanged = new EventEmitter<void>();
 
   @Input()
   destinations: Destination[];
@@ -56,12 +63,13 @@ export class DestinationListComponent implements OnInit {
   }
 
   changeSort() {
-    this.sortService.changeSort();
+    this.orderValue = (this.orderValue + 1) % 3;
+    this.sortService.changeOrderFor(sortNameField, this.orderValue);
     this.sortChanged.emit();
   }
 
-  getSortClass() {
-    return this.sortService.getSortString();
+  getSortClass(): string {
+    return this.sortService.getSortFor(sortNameField).order ? this.sortService.getSortFor(sortNameField).order : ''
   }
 
   selectDestination(dest: Destination) {

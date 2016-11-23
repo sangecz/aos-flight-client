@@ -4,6 +4,5 @@ import { Sort } from './shared/sort/sort';
  */
 
 export interface AppState {
-  sort: Sort;
-  counter: number;
+  sort: Sort
 }
