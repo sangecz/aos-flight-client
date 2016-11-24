@@ -24,6 +24,10 @@ export class ProjectConfig extends SeedConfig {
       // 'traceur': 'node_modules/traceur/dist/'
     });
 
+    this.SYSTEM_BUILDER_CONFIG.packageConfigPaths = [
+      ...this.SYSTEM_BUILDER_CONFIG.packageConfigPaths,
+      join('node_modules', '@ngrx', '*', 'package.json')
+    ];
 
     /* Enable typeless compiler runs (faster) between typed compiler runs. */
     // this.TYPED_COMPILE_INTERVAL = 5;

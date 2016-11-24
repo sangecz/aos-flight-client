@@ -387,8 +387,7 @@ export class SeedConfig {
     base: this.PROJECT_ROOT,
     packageConfigPaths: [
       join('node_modules', '*', 'package.json'),
-      join('node_modules', '@angular', '*', 'package.json'),
-      join('node_modules', '@ngrx', '*', 'package.json')
+      join('node_modules', '@angular', '*', 'package.json')
     ],
     paths: {
       // Note that for multiple apps this configuration need to be updated

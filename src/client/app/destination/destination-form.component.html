@@ -18,30 +18,6 @@
 
     <tr>
       <td>
-        <label>
-          <span>Latitude</span>
-          <input type="number" formControlName="lat">
-        </label>
-        <div class="error" *ngIf="destinationFG.get('lat').hasError('required') && destinationFG.get('lat').touched">
-          Latitude is required
-        </div>
-      </td>
-    </tr>
-
-    <tr>
-      <td>
-        <label>
-          <span>Longitude</span>
-          <input type="number" formControlName="lon">
-        </label>
-        <div class="error" *ngIf="destinationFG.get('lon').hasError('required') && destinationFG.get('lon').touched">
-          Longitude is required
-        </div>
-      </td>
-    </tr>
-
-    <tr>
-      <td>
         <button type="submit" [disabled]="destinationFG.invalid">Save</button>
         <button *ngIf="detail" type="button" (click)="remove()">Delete</button>
         <button *ngIf="detail" type="button" (click)="back()">Back</button>

@@ -16,17 +16,13 @@ export class DestinationFormComponent implements OnInit {
   private destinationValue: Destination;
   private detail: boolean = false;
 
-
-
   constructor(private fb: FormBuilder) {
     this.createForm();
   }
 
   private createForm() {
     this.destinationFG = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      lat: ['', [Validators.required]],
-      lon: ['', [Validators.required]]
+      name: ['', [Validators.required, Validators.minLength(3)]]
     });
   }
 
@@ -40,11 +36,9 @@ export class DestinationFormComponent implements OnInit {
 
     this.destinationValue = val || Object.assign({});
 
-    if (val && val.name && val.lat && val.lon) {
+    if (val && val.name) {
       this.destinationFG.setValue({
-        name: val.name,
-        lat: val.lat,
-        lon: val.lon
+        name: val.name
       });
     }
   }
@@ -59,8 +53,6 @@ export class DestinationFormComponent implements OnInit {
   onSubmit() {
     if (this.destinationFG.valid) {
       this.destinationValue.name = this.destinationFG.value.name;
-      this.destinationValue.lat = this.destinationFG.value.lat;
-      this.destinationValue.lon = this.destinationFG.value.lon;
 
       this.onDestinationChange.emit(this.destinationValue);
       this.createForm();
