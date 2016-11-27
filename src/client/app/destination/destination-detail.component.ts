@@ -23,7 +23,13 @@ import { ToastUtils } from '../shared/util/util';
     >
     
     </destination-form>
-  `
+  `,
+  styles: [`
+    :host {
+      display: block;
+      padding: 0 16px;
+    }
+  `]
 })
 export class DestinationDetailComponent implements OnInit {
 

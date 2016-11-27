@@ -8,6 +8,7 @@ import { ToastyService } from 'ng2-toasty';
 import { ReservationService } from '../shared/reservation/reservation.service';
 import { reservationStates } from './reservation-states';
 import { ToastUtils } from '../shared/util/util';
+import { FlightService } from '../shared/flight/flight.service';
 
 @Component({
   moduleId: module.id,
@@ -17,6 +18,7 @@ import { ToastUtils } from '../shared/util/util';
     
     <reservation-form
       [reservation]="selectedReservation"
+      [flights]="flights"
       [isDetail]="true"
       (onReservationChange)="saveReservation($event)"
       (onRemove)="removeReservation($event)"
@@ -24,19 +26,29 @@ import { ToastUtils } from '../shared/util/util';
     </reservation-form>
     
     <button type="button" *ngIf="showPayBtn()" (click)="payForReservation()">Pay</button>
-  `
+  `,
+  styles: [`
+    :host {
+      display: block;
+      padding: 0 16px;
+    }
+  `]
 })
 export class ReservationDetailComponent implements OnInit {
 
+  flights: Flight[];
   selectedReservation: Reservation;
 
   constructor(public reservationService: ReservationService,
               public route: ActivatedRoute,
               public router: Router,
-              private toast: ToastyService) {
+              private toast: ToastyService,
+              private flightService: FlightService) {
   }
 
   ngOnInit() {
+    this.getFlights();
+
     this.route.params.forEach((params: Params) => {
       let id = +params['id']; // + konvertuje string na number
       this.reservationService.getOne(id)
@@ -69,6 +81,16 @@ export class ReservationDetailComponent implements OnInit {
     this.reservationService.pay(this.selectedReservation.id)
       .subscribe(
         () => this.back(),
+        err => this.toast.error(ToastUtils.set(err))
+      );
+  }
+
+  getFlights() {
+    this.flightService.getAll(null, null, null)
+      .subscribe(
+        res => {
+          this.flights = res[0];
+        },
         err => this.toast.error(ToastUtils.set(err))
       );
   }

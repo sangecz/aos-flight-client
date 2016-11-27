@@ -8,21 +8,33 @@ import { Observable } from 'rxjs/Observable';
 import { DestinationState, DESTINATION_TAG } from '../shared/destination/destination.state';
 import { ToastUtils } from '../shared/util/util';
 
-const sortField = 'name';
+const destinationSortFields = {
+  name: 'name'
+};
 
 @Component({
   moduleId: module.id,
   selector: 'sd-destination',
   template: `
     <h2>Add destination</h2>
-    <destination-form [destination]="selectedDestination" (onDestinationChange)="addDestination($event)"></destination-form>
+    <destination-form 
+      [destination]="selectedDestination" 
+      (onDestinationChange)="addDestination($event)">
+    </destination-form>
     
     <destination-list
       [destinations]="destinations"
       [sortClass]="(state$ | async)?.sort?.order"
-      (destinationSelected)="selectDestination($event)"
-      (sortChanged)="changeSort()"
-    ></destination-list>`
+      (onDestinationSelected)="selectDestination($event)"
+      (onSortChanged)="changeSort()"
+    ></destination-list>
+  `,
+  styles: [`
+    :host {
+      display: block;
+      padding: 0 16px;
+    }
+  `]
 })
 export class DestinationComponent implements OnInit {
 
@@ -34,7 +46,7 @@ export class DestinationComponent implements OnInit {
               private router: Router,
               private sortService: SortService,
               private toast: ToastyService) {
-    this.state$ = <Observable<DestinationState>> sortService.registerSort(DESTINATION_TAG, sortField);
+    this.state$ = <Observable<DestinationState>> sortService.registerSort(DESTINATION_TAG, destinationSortFields.name);
   }
 
   ngOnInit() {
@@ -65,7 +77,7 @@ export class DestinationComponent implements OnInit {
   }
 
   changeSort() {
-    this.sortService.toggleSort(DESTINATION_TAG, sortField);
+    this.sortService.toggleSort(DESTINATION_TAG, destinationSortFields.name);
     this.getDestinations();
   }
 

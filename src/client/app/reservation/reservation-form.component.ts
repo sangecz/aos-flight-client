@@ -5,16 +5,23 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 import { Constants } from '../shared/config/app.constants';
-import { FlightService } from '../shared/flight/flight.service';
-import { AuthService } from '../shared/auth/auth.service';
 import { reservationStates } from './reservation-states';
 
 // TODO pridat password pro getOne/update
 @Component({
   moduleId: module.id,
   selector: 'reservation-form',
-  styleUrls: ['reservation-form.component.css'],
-  templateUrl: 'reservation-form.component.html'
+  templateUrl: 'reservation-form.component.html',
+  styles: [`
+    input[type="text"], input[type="number"], input[type="password"], select{
+      float: right;
+      width: 250px;
+    }
+    
+    td {
+      width: 330px;
+    }
+  `]
 })
 export class ReservationFormComponent implements OnInit {
 
@@ -24,9 +31,7 @@ export class ReservationFormComponent implements OnInit {
   private submitTxt: string = '';
   private _flights: Flight[] = [];
 
-  constructor(private fb: FormBuilder,
-              private flightService: FlightService,
-              private authService: AuthService) {
+  constructor(private fb: FormBuilder) {
     this.createForm();
   }
 
@@ -49,12 +54,22 @@ export class ReservationFormComponent implements OnInit {
     }
   }
 
-  @Output() onReservationChange = new EventEmitter<Reservation>();
+  @Input()
+  set flights(flights: Flight[]) {
+    if (flights) {
+      this._flights = flights;
 
+      if (!this.detail && this._flights.length > 0 && !this.detail) {
+        this.reservationFG.get('flight').setValue(this._flights[0].id);
+      }
+    }
+  }
+
+  @Output() onReservationChange = new EventEmitter<Reservation>();
   @Output() onBack = new EventEmitter<void>();
   @Output() onRemove = new EventEmitter<number>();
+
   ngOnInit(): void {
-    this.getFlights();
     if (this.detail) {
       this.submitTxt = 'Cancel reservation';
 
@@ -88,21 +103,6 @@ export class ReservationFormComponent implements OnInit {
 
   remove() {
     this.onRemove.emit(this.reservationValue.id);
-  }
-
-  getFlights() {
-    this.flightService.getAll(null, null, null)
-      .subscribe(
-        res => {
-          this._flights = res[0];
-
-          if (!this.detail && this._flights.length > 0 && !this.detail) {
-            this.reservationFG.get('flight').setValue(this._flights[0].id);
-          }
-        },
-        err => {
-        }
-      );
   }
 
   showSubmitBtn(): boolean {

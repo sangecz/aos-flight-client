@@ -8,46 +8,26 @@ import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from 
   moduleId: module.id,
   selector: 'destination-list',
   template: ` <h2>Destination list</h2>
-              <table>
+              <table class="list">
                 <tr>
-                  <th (click)="changeSort()" [ngClass]="sortClass">Name</th>
+                  <th (click)="onSortChanged.emit()" [ngClass]="sortClass">Name</th>
                   <th>Latitude</th>
                   <th>Longitude</th>
                 </tr>
-                <tr *ngFor="let destination of destinations" (click)="selectDestination(destination)">
+                <tr *ngFor="let destination of destinations" (click)="onDestinationSelected.emit(destination)">
                   <td>{{destination.name}}</td>
                   <td>{{destination.lat}}</td>
                   <td>{{destination.lon}}</td>
                 </tr>
-              </table>`,
-  styles: [`
-      tr {
-        cursor: pointer;
-      }
-      
-      tr:not(:first-child):hover {
-        background-color: #bbb;
-      }
-      
-      tr:nth-child(odd) {
-        background-color: #efefef;
-      }
-  `],
+              </table>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DestinationListComponent {
 
-  @Output() destinationSelected = new EventEmitter<Destination>();
-  @Output() sortChanged = new EventEmitter<void>();
   @Input() destinations: Destination[];
   @Input() sortClass: string;
-
-  changeSort() {
-    this.sortChanged.emit();
-  }
-
-  selectDestination(dest: Destination) {
-    this.destinationSelected.emit(dest);
-  }
+  @Output() onDestinationSelected = new EventEmitter<Destination>();
+  @Output() onSortChanged = new EventEmitter<void>();
 
 }

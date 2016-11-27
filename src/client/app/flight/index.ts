@@ -5,4 +5,6 @@ export * from './flight.component';
 export * from './flight.routes';
 export * from './flight-detail.component';
 export * from './flight-form.component';
+export * from './flight-list.component';
 export * from './flight.mock';
+export * from './departure-filter.component';

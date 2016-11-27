@@ -52,7 +52,7 @@
         <label>
           <span>From</span>
           <select formControlName="from" >
-            <option *ngFor="let d of destinations" [ngValue]="d.id">{{d.name}}</option>
+            <option *ngFor="let d of _destinations" [ngValue]="d.id">{{d.name}}</option>
           </select>
         </label>
         <div class="error" *ngIf="flightFG.get('from').hasError('required') && flightFG.get('from').touched">
@@ -66,7 +66,7 @@
         <label>
           <span>To</span>
           <select formControlName="to" >
-            <option *ngFor="let d of destinations" [ngValue]="d.id">{{d.name}}</option>
+            <option *ngFor="let d of _destinations" [ngValue]="d.id">{{d.name}}</option>
           </select>
         </label>
         <div class="error" *ngIf="flightFG.get('to').hasError('required') && flightFG.get('to').touched">

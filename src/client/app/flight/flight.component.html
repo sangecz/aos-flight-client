@@ -1,32 +1,29 @@
 <h2>Add flight</h2>
-<flight-form [flight]="selectedFlight" (onFlightChange)="addFlight($event)"></flight-form>
+
+<flight-form
+  [flight]="selectedFlight"
+  [destinations]="destinations"
+  (onFlightChange)="addFlight($event)">
+</flight-form>
 
 <h2>Flight list</h2>
 
-<departure-filter (onDepartureFilterChange)="applyFilter($event)"></departure-filter>
+<departure-filter
+  (onDepartureFilterChange)="applyFilter($event)">
+</departure-filter>
 
 <pagination
   [recordCount]="recordCount"
   (onPaginationChange)="paginationChanged($event)">
 </pagination>
 
-<table>
-  <tr>
-    <th (click)="changeSort(nameField)" [ngClass]="(getSortClass(nameField) | async)?.sort?.order">Name</th>
-    <th (click)="changeSort(departureField)" [ngClass]="[(getSortClass(departureField) | async)?.sort?.order, getFilterClass()]">Departure</th>
-    <th>Distance</th>
-    <th>Seats</th>
-    <th>Price</th>
-    <th>From</th>
-    <th>To</th>
-  </tr>
-  <tr *ngFor="let flight of flights" (click)="selectFlight(flight)">
-    <td>{{flight.name}}</td>
-    <td>{{flight.dateOfDeparture | date:'yyyy-MM-ddTHH:mm:ss Z'}}</td>
-    <td>{{flight.distance}}</td>
-    <td>{{flight.seats}}</td>
-    <td>{{flight.price}}</td>
-    <td>{{flight.fromName}}</td>
-    <td>{{flight.toName}}</td>
-  </tr>
-</table>
+<flight-list
+  [flights]="flights"
+  [nameSortClass]="(getSortClass(nameField) | async)?.sort?.order"
+  [departureSortClass]="(getSortClass(departureField) | async)?.sort?.order"
+  [filterClass]="getFilterClass()"
+  (onFlightSelected)="selectFlight($event)"
+  (onChangeNameSort)="changeSort(nameField)"
+  (onChangeDepartureSort)="changeSort(departureField)"
+>
+</flight-list>

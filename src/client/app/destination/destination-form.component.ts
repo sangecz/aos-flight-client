@@ -7,8 +7,16 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 @Component({
   moduleId: module.id,
   selector: 'destination-form',
-  styleUrls: ['destination-form.component.css'],
-  templateUrl: 'destination-form.component.html'
+  templateUrl: 'destination-form.component.html',
+  styles: [`
+    input[type="text"], input[type="number"]{
+      float: right;
+    }
+    
+    td {
+      width: 330px;
+    }
+  `]
 })
 export class DestinationFormComponent {
 
@@ -40,7 +48,6 @@ export class DestinationFormComponent {
   @Output() onDestinationChange = new EventEmitter<Destination>();
   @Output() onBack = new EventEmitter<void>();
   @Output() onRemove = new EventEmitter<number>();
-
 
   onSubmit() {
     if (this.destinationFG.valid) {

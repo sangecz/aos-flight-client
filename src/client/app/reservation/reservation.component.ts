@@ -5,28 +5,58 @@ import { ToastyService } from 'ng2-toasty';
 import { ReservationService } from '../shared/reservation/reservation.service';
 import { AuthService } from '../shared/auth/auth.service';
 import { ToastUtils } from '../shared/util/util';
+import { FlightService } from '../shared/flight/flight.service';
 
 
 @Component({
   moduleId: module.id,
   selector: 'sd-reservation',
-  templateUrl: 'reservation.component.html',
-  styleUrls: ['reservation.component.css'],
+  template: `
+    <h2>Add reservation</h2>
+    
+    <reservation-form
+      [flights]="flights"
+      [reservation]="selectedReservation"
+      (onReservationChange)="addReservation($event)">
+    </reservation-form>
+    
+    <div [hidden]="!createdReservation">
+      <!-- TODO pouzit heslo pro vstup do rezervace -->
+      <h5>Last created reservation:</h5>
+      <a href="#" routerLink="/client/reservation/{{createdReservation?.id}}">reservation link</a><br/>
+      <span> password: {{createdReservation?.password}}</span>
+    </div>
+    
+    <reservation-list
+      [isAdmin]="authService.isAdmin"
+      [reservations]="reservations"
+      (onReservationSelected)="selectReservation($event)">
+    </reservation-list>
+  `,
+  styles: [`
+    :host {
+      display: block;
+      padding: 0 16px;
+    }
+  `]
 })
 export class ReservationComponent implements OnInit {
 
+  flights: Flight[];
   createdReservation: Reservation;
-  reservations: Reservation[] = [];
+  reservations: Reservation[];
   selectedReservation: Reservation;
 
   constructor(public reservationService: ReservationService,
               private router: Router,
-              private authService: AuthService,
-              private toast: ToastyService) {
+              public authService: AuthService,
+              private toast: ToastyService,
+              private flightService: FlightService) {
   }
 
   ngOnInit() {
     this.getReservations();
+    this.getFlights();
   }
 
   getReservations() {
@@ -49,8 +79,16 @@ export class ReservationComponent implements OnInit {
   }
 
   selectReservation(reservation: Reservation) {
-    // this.selectedReservation = reservation;
     this.router.navigate(['/client/reservation', reservation.id]);
   }
 
+  getFlights() {
+    this.flightService.getAll(null, null, null)
+      .subscribe(
+        res => {
+          this.flights = res[0];
+        },
+        err => this.toast.error(ToastUtils.set(err))
+      );
+  }
 }

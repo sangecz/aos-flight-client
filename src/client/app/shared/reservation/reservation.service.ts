@@ -14,7 +14,7 @@ const endpoint = 'reservation';
 @Injectable()
 export class ReservationService {
 
-  options: RequestOptions;
+  private options: RequestOptions;
 
   constructor(private flightService: FlightService,
               private http: Http) {
@@ -22,7 +22,6 @@ export class ReservationService {
   }
 
   getAll(): Observable<any> {
-
     return Observable.forkJoin(
       this.http.get(`${apiUrl}/${endpoint}`, this.options).map((res: Response) => res.json()),
       this.flightService.getAll(null, null, null)

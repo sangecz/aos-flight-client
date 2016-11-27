@@ -1,29 +1,36 @@
 /**
  * Created by sange on 23/10/2016.
  */
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Constants } from '../shared/config/app.constants';
-import { DestinationService } from '../shared/destination/destination.service';
 import { validateDateTime } from '../shared/forms/validator';
 
 @Component({
   moduleId: module.id,
   selector: 'flight-form',
-  styleUrls: ['flight-form.component.css'],
-  templateUrl: 'flight-form.component.html'
+  templateUrl: 'flight-form.component.html',
+  styles: [`
+    input[type="text"], input[type="number"], input[type="password"], input[type="date"], select {
+      float: right;
+      width: 210px;
+    }
+    
+    td {
+      width: 330px;
+    }
+  `]
 })
-export class FlightFormComponent implements OnInit {
+export class FlightFormComponent {
 
   private flightFG: FormGroup;
   private flightValue: Flight;
   private detail: boolean = false;
-  private destinations: Destination[];
+  private _destinations: Destination[];
   datetimePlaceholder = Constants.DATETIME_PLACEHOLDER;
 
-  constructor(private fb: FormBuilder,
-              private destinationService: DestinationService) {
+  constructor(private fb: FormBuilder) {
     this.createForm();
   }
 
@@ -47,13 +54,21 @@ export class FlightFormComponent implements OnInit {
     }
   }
 
+  @Input()
+  set destinations(destinations: Destination[]) {
+    if(destinations) {
+      this._destinations = destinations;
+
+      if (this._destinations.length > 0 && !this.detail) {
+        this.flightFG.get('from').setValue(this._destinations[0].id);
+        this.flightFG.get('to').setValue(this._destinations[0].id);
+      }
+    }
+  }
+
   @Output() onFlightChange = new EventEmitter<Flight>();
   @Output() onBack = new EventEmitter<void>();
   @Output() onRemove = new EventEmitter<number>();
-
-  ngOnInit(): void {
-    this.getDestionations();
-  }
 
   onSubmit() {
     if (this.flightFG.valid) {
@@ -85,21 +100,5 @@ export class FlightFormComponent implements OnInit {
       from: ['', [Validators.required]],
       to: ['', [Validators.required]]
     });
-  }
-
-  private getDestionations() {
-    this.destinationService.getAll(null)
-      .subscribe(
-        res => {
-          this.destinations = res;
-          if (this.destinations.length > 0 && !this.detail) {
-            this.flightFG.get('from').setValue(this.destinations[0].id);
-            this.flightFG.get('to').setValue(this.destinations[0].id);
-          }
-        },
-        err => {
-
-        }
-      );
   }
 }

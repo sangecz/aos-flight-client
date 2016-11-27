@@ -13,7 +13,7 @@ const endpoint = 'destination';
 @Injectable()
 export class DestinationService {
 
-  options: RequestOptions;
+  private options: RequestOptions;
 
   constructor(private http: Http) {
     this.options = new RequestOptions({headers: this.createHeaders()});

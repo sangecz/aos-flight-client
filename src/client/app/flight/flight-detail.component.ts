@@ -7,6 +7,7 @@ import { ToastyService } from 'ng2-toasty';
 
 import { ToastUtils } from '../shared/util/util';
 import { FlightService } from '../shared/flight/flight.service';
+import { DestinationService } from '../shared/destination/destination.service';
 
 @Component({
   moduleId: module.id,
@@ -15,6 +16,7 @@ import { FlightService } from '../shared/flight/flight.service';
     <h2>Edit flight</h2>
 
     <flight-form
+      [destinations]="destinations"
       [flight]="selectedFlight"
       [isDetail]="true"
       (onFlightChange)="saveFlight($event)"
@@ -23,19 +25,29 @@ import { FlightService } from '../shared/flight/flight.service';
     >
     
     </flight-form>
-  `
+  `,
+  styles: [`
+    :host {
+      display: block;
+      padding: 0 16px;
+    }
+  `]
 })
 export class FlightDetailComponent implements OnInit {
 
+  destinations: Destination[];
   selectedFlight: Flight;
 
   constructor(public flightService: FlightService,
+              private destinationService: DestinationService,
               public route: ActivatedRoute,
               public router: Router,
               private toast: ToastyService) {
   }
 
   ngOnInit() {
+    this.getDestinations();
+
     this.route.params.forEach((params: Params) => {
       let id = +params['id']; // + konvertuje string na number
       this.flightService.getOne(id)
@@ -47,7 +59,6 @@ export class FlightDetailComponent implements OnInit {
   }
 
   saveFlight(flight: Flight) {
-    console.log('save', flight);
     if (flight) {
       this.flightService.update(flight)
         .subscribe(
@@ -61,6 +72,14 @@ export class FlightDetailComponent implements OnInit {
     this.flightService.remove(id)
       .subscribe(
         () => this.back(),
+        err => this.toast.error(ToastUtils.set(err))
+      );
+  }
+
+  private getDestinations() {
+    this.destinationService.getAll(null)
+      .subscribe(
+        res => this.destinations = res,
         err => this.toast.error(ToastUtils.set(err))
       );
   }

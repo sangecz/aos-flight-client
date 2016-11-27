@@ -9,4 +9,3 @@ export interface FlightState {
 }
 
 export const FLIGHT_TAG = 'flight';
-

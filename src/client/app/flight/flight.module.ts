@@ -7,11 +7,12 @@ import { FlightFormComponent } from './flight-form.component';
 import { FlightDetailComponent } from './flight-detail.component';
 import { FlightComponent } from './flight.component';
 import { DepartureFilterComponent } from './departure-filter.component';
+import { FlightListComponent } from './flight-list.component';
 
 @NgModule({
   imports: [CommonModule, SharedModule, ReactiveFormsModule],
-  declarations: [FlightComponent, FlightFormComponent, FlightDetailComponent, DepartureFilterComponent],
-  exports: [FlightComponent, FlightFormComponent, FlightDetailComponent, DepartureFilterComponent],
+  declarations: [FlightComponent, FlightFormComponent, FlightDetailComponent, DepartureFilterComponent, FlightListComponent],
+  exports: [FlightComponent, FlightFormComponent, FlightDetailComponent, DepartureFilterComponent, FlightListComponent],
   providers: []
 })
 export class FlightModule {

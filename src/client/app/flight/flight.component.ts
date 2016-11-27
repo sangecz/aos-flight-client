@@ -9,17 +9,29 @@ import { DepartureFilter } from '../shared/filter/filter';
 import { Pagination } from '../shared/pagination/pagination';
 import { FlightState, FLIGHT_TAG } from '../shared/flight/flight.state';
 import { ToastUtils } from '../shared/util/util';
+import { DestinationService } from '../shared/destination/destination.service';
+
+const flightSortFields = {
+  name: 'name',
+  departure: 'dateOfDeparture'
+};
 
 @Component({
   moduleId: module.id,
   selector: 'sd-flight',
   templateUrl: 'flight.component.html',
-  styleUrls: ['flight.component.css'],
+  styles: [`
+    :host {
+      display: block;
+      padding: 0 16px;
+    }
+  `]
 })
 export class FlightComponent implements OnInit {
 
-  departureField = 'dateOfDeparture';
-  nameField = 'name';
+  destinations: Destination[];
+  departureField = flightSortFields.departure;
+  nameField = flightSortFields.name;
   selectedSortField = this.departureField;
   state$: Observable<FlightState>;
   filter: DepartureFilter;
@@ -30,6 +42,7 @@ export class FlightComponent implements OnInit {
   selectedFlight: Flight;
 
   constructor(public flightService: FlightService,
+              private destinationService: DestinationService,
               private router: Router,
               private sortService: SortService,
               private toast: ToastyService) {
@@ -38,6 +51,7 @@ export class FlightComponent implements OnInit {
 
   ngOnInit() {
     this.getFlights();
+    this.getDestinations();
   }
 
   getFlights() {
@@ -70,7 +84,6 @@ export class FlightComponent implements OnInit {
   changeSort(field: string) {
     if (field !== this.selectedSortField) {
       this.selectedSortField = field;
-      // this.orderValue = 0;
       this.sortService.switchSort(FLIGHT_TAG, field);
     }
     this.sortService.toggleSort(FLIGHT_TAG, field);
@@ -98,4 +111,11 @@ export class FlightComponent implements OnInit {
     this.getFlights();
   }
 
+  private getDestinations() {
+    this.destinationService.getAll(null)
+      .subscribe(
+        res => this.destinations = res,
+        err => this.toast.error(ToastUtils.set(err))
+      );
+  }
 }

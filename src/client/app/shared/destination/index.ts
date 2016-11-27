@@ -4,3 +4,4 @@
 export * from './destination.service';
 export * from './destination.actions';
 export * from './destination.reducer';
+export * from './destination.state';
