@@ -2,13 +2,13 @@
  * Created by sange on 03/11/2016.
  */
 
-import {ValidatorFn, AbstractControl} from '@angular/forms';
+import { ValidatorFn, AbstractControl } from '@angular/forms';
 
 export function validateDateTime(couldEmpty: boolean): ValidatorFn {
 
   return (control: AbstractControl): {[key: string]: any} => {
 
-    if(couldEmpty && control.value === '') {
+    if (couldEmpty && control.value === '') {
       return null;
     }
 

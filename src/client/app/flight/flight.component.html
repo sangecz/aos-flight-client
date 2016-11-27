@@ -1,8 +1,6 @@
 <h2>Add flight</h2>
 <flight-form [flight]="selectedFlight" (onFlightChange)="addFlight($event)"></flight-form>
 
-<error-message [errorMessage]="errorMessage"></error-message>
-
 <h2>Flight list</h2>
 
 <departure-filter (onDepartureFilterChange)="applyFilter($event)"></departure-filter>

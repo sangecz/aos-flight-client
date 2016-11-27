@@ -1,26 +1,38 @@
 /**
  * Created by sange on 23/10/2016.
  */
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ToastyService } from 'ng2-toasty';
 
-import {DestinationService} from "../shared/destination/destination.service";
+import { DestinationService } from '../shared/destination/destination.service';
+import { ToastUtils } from '../shared/util/util';
 
 @Component({
   moduleId: module.id,
   selector: 'destination-detail',
-  templateUrl: 'destination-detail.component.html'
+  template: `
+    <h2>Edit destination</h2>
+
+    <destination-form
+      [destination]="selectedDestination"
+      [isDetail]="true"
+      (onDestinationChange)="saveDestination($event)"
+      (onRemove)="removeDestination($event)"
+      (onBack)="back($event)"
+    >
+    
+    </destination-form>
+  `
 })
 export class DestinationDetailComponent implements OnInit {
 
-  errorMessage: string;
   selectedDestination: Destination;
 
-  constructor(
-    public destinationService: DestinationService,
-    public route: ActivatedRoute,
-    public router: Router
-  ) {
+  constructor(public destinationService: DestinationService,
+              public route: ActivatedRoute,
+              public router: Router,
+              private toast: ToastyService) {
   }
 
   ngOnInit() {
@@ -29,17 +41,17 @@ export class DestinationDetailComponent implements OnInit {
       this.destinationService.getOne(id)
         .subscribe(
           destination => this.selectedDestination = destination,
-          err => this.errorMessage = err
+          err => this.toast.error(ToastUtils.set(err))
         );
-    })
+    });
   }
 
   saveDestination(destination: Destination) {
-    if(destination) {
+    if (destination) {
       this.destinationService.update(destination)
         .subscribe(
           res => this.back(),
-          err => this.errorMessage = err
+          err => this.toast.error(ToastUtils.set(err))
         );
     }
   }
@@ -48,7 +60,7 @@ export class DestinationDetailComponent implements OnInit {
     this.destinationService.remove(id)
       .subscribe(
         res => this.back(),
-        err => this.errorMessage = err
+        err => this.toast.error(ToastUtils.set(err))
       );
   }
 

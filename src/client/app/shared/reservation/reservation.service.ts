@@ -1,15 +1,13 @@
-import {Injectable} from '@angular/core';
-import {Http, Response, RequestOptions, Headers} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
-import {Config} from "../config/env.config";
-import {reservationStates} from "../../reservation/reservation-states";
-import {Constants} from "../config/app.constants";
-import {FlightService} from "../flight/flight.service";
+import { Config } from '../config/env.config';
+import { reservationStates } from '../../reservation/reservation-states';
+import { Constants } from '../config/app.constants';
+import { FlightService } from '../flight/flight.service';
 
-// const endpoint = 'reservations';
-// const apiUrl = '/app';
 const apiUrl = Config.API;
 const endpoint = 'reservation';
 
@@ -18,10 +16,8 @@ export class ReservationService {
 
   options: RequestOptions;
 
-  constructor(
-    private flightService: FlightService,
-    private http: Http
-  ) {
+  constructor(private flightService: FlightService,
+              private http: Http) {
     this.options = new RequestOptions({headers: this.createHeaders()});
   }
 
@@ -37,7 +33,7 @@ export class ReservationService {
 
         reservations.forEach((r: Reservation) => {
           flights.forEach((f: Flight) => {
-            if(r.flight === f.id) r.flightName = f.name;
+            if (r.flight === f.id) r.flightName = f.name;
           });
         });
 
@@ -58,7 +54,7 @@ export class ReservationService {
         let flights: Flight[] = res[1][0];
 
         flights.forEach((f: Flight) => {
-          if(reservation.flight === f.id) reservation.flightName = f.name;
+          if (reservation.flight === f.id) reservation.flightName = f.name;
         });
 
         return reservation;
@@ -119,4 +115,3 @@ export class ReservationService {
     return headers;
   }
 }
-

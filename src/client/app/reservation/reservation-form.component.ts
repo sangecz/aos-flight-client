@@ -1,13 +1,13 @@
 /**
  * Created by sange on 23/10/2016.
  */
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {FormGroup, Validators, FormBuilder} from "@angular/forms";
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
-import {Constants} from "../shared/config/app.constants";
-import {FlightService} from "../shared/flight/flight.service";
-import {AuthService} from "../shared/auth/auth.service";
-import {reservationStates} from "./reservation-states";
+import { Constants } from '../shared/config/app.constants';
+import { FlightService } from '../shared/flight/flight.service';
+import { AuthService } from '../shared/auth/auth.service';
+import { reservationStates } from './reservation-states';
 
 // TODO pridat password pro getOne/update
 @Component({
@@ -24,21 +24,10 @@ export class ReservationFormComponent implements OnInit {
   private submitTxt: string = '';
   private _flights: Flight[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private flightService: FlightService,
-    private authService: AuthService
-  ) {
+  constructor(private fb: FormBuilder,
+              private flightService: FlightService,
+              private authService: AuthService) {
     this.createForm();
-  }
-
-  private createForm() {
-    this.reservationFG = this.fb.group({
-      flight: ['', [Validators.required]],
-      seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
-      created: ['', []],
-      state: ['', []]
-    });
   }
 
   @Input()
@@ -61,12 +50,12 @@ export class ReservationFormComponent implements OnInit {
   }
 
   @Output() onReservationChange = new EventEmitter<Reservation>();
+
   @Output() onBack = new EventEmitter<void>();
   @Output() onRemove = new EventEmitter<number>();
-
   ngOnInit(): void {
     this.getFlights();
-    if(this.detail) {
+    if (this.detail) {
       this.submitTxt = 'Cancel reservation';
 
       this.reservationFG.reset({
@@ -87,17 +76,17 @@ export class ReservationFormComponent implements OnInit {
       this.reservationValue.seats = +this.reservationFG.value.seats;
 
       this.onReservationChange.emit(this.reservationValue);
-      if(!this.detail){
+      if (!this.detail) {
         this.createForm();
       }
     }
   }
 
-  back(){
+  back() {
     this.onBack.emit();
   }
 
-  remove(){
+  remove() {
     this.onRemove.emit(this.reservationValue.id);
   }
 
@@ -107,16 +96,17 @@ export class ReservationFormComponent implements OnInit {
         res => {
           this._flights = res[0];
 
-          if(!this.detail && this._flights.length > 0 && !this.detail) {
+          if (!this.detail && this._flights.length > 0 && !this.detail) {
             this.reservationFG.get('flight').setValue(this._flights[0].id);
           }
         },
-        err => {}
+        err => {
+        }
       );
   }
 
   showSubmitBtn(): boolean {
-    if(!this.detail) {
+    if (!this.detail) {
       return true;
     }
 
@@ -124,10 +114,19 @@ export class ReservationFormComponent implements OnInit {
   }
 
   showDeleteBtn(): boolean {
-    if(!this.detail) {
+    if (!this.detail) {
       return false;
     }
     return this.reservationValue && this.reservationValue.state !== reservationStates.PAID;
+  }
+
+  private createForm() {
+    this.reservationFG = this.fb.group({
+      flight: ['', [Validators.required]],
+      seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
+      created: ['', []],
+      state: ['', []]
+    });
   }
 
 }

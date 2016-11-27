@@ -1,8 +1,8 @@
 /**
  * Created by sange on 23/10/2016.
  */
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {FormGroup, Validators, FormBuilder} from "@angular/forms";
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 @Component({
   moduleId: module.id,
@@ -10,7 +10,7 @@ import {FormGroup, Validators, FormBuilder} from "@angular/forms";
   styleUrls: ['destination-form.component.css'],
   templateUrl: 'destination-form.component.html'
 })
-export class DestinationFormComponent implements OnInit {
+export class DestinationFormComponent {
 
   private destinationFG: FormGroup;
   private destinationValue: Destination;
@@ -18,12 +18,6 @@ export class DestinationFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.createForm();
-  }
-
-  private createForm() {
-    this.destinationFG = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]]
-    });
   }
 
   @Input()
@@ -47,8 +41,6 @@ export class DestinationFormComponent implements OnInit {
   @Output() onBack = new EventEmitter<void>();
   @Output() onRemove = new EventEmitter<number>();
 
-  ngOnInit(): void {
-  }
 
   onSubmit() {
     if (this.destinationFG.valid) {
@@ -59,13 +51,17 @@ export class DestinationFormComponent implements OnInit {
     }
   }
 
-  back(){
+  back() {
     this.onBack.emit();
   }
 
-  remove(){
+  remove() {
     this.onRemove.emit(this.destinationValue.id);
   }
 
-
+  private createForm() {
+    this.destinationFG = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]]
+    });
+  }
 }

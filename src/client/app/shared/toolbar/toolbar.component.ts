@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { Config } from './../../shared/index';
 
@@ -8,15 +8,19 @@ import { Config } from './../../shared/index';
 @Component({
   moduleId: module.id,
   selector: 'sd-toolbar',
-  templateUrl: 'toolbar.component.html',
-  styleUrls: ['toolbar.component.css']
+  template: `
+    <h1>{{appTitle}}</h1>
+    <div class="more"></div>
+  `,
+  styleUrls: ['toolbar.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ToolbarComponent {
 
   appTitle: string;
 
-  constructor(){
+  constructor() {
     this.appTitle = Config.APP_TITLE;
   }
 }

@@ -1,9 +1,9 @@
 /**
  * Created by sange on 30/10/2016.
  */
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 
-import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
-import {Pagination} from "./pagination";
+import { Pagination } from './pagination';
 
 const initPagination: Pagination = {base: 10, offset: 0};
 
@@ -13,17 +13,11 @@ const initPagination: Pagination = {base: 10, offset: 0};
   templateUrl: 'pagination.component.html',
   styleUrls: ['pagination.component.css']
 })
-export class PaginationComponent implements OnInit {
+export class PaginationComponent {
 
   private pagination: Pagination = initPagination;
   private _recordCount: number = 0;
   bases = [5, 10, 20, 50, 100];
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
 
   @Input()
   set recordCount(cnt: number) {
@@ -32,21 +26,21 @@ export class PaginationComponent implements OnInit {
 
   @Output() onPaginationChange = new EventEmitter<Pagination>();
 
-  paginationBaseChanged(base: number){
+  paginationBaseChanged(base: number) {
     this.pagination.base = base;
     this.pagination.offset = 0;
     this.onPaginationChange.emit(this.pagination);
   }
 
   nextPage() {
-    if(!this.isAtLastPage()) {
+    if (!this.isAtLastPage()) {
       this.pagination.offset += this.pagination.base;
       this.onPaginationChange.emit(this.pagination);
     }
   }
 
   prevPage() {
-    if(!this.isAtFirstPage()) {
+    if (!this.isAtFirstPage()) {
       this.pagination.offset -= this.pagination.base;
       this.onPaginationChange.emit(this.pagination);
     }
@@ -56,7 +50,7 @@ export class PaginationComponent implements OnInit {
     return this.pagination.offset - this.pagination.base < 0;
   }
 
-  isAtLastPage(){
+  isAtLastPage() {
     return this.pagination.offset + this.pagination.base >= this._recordCount;
   }
 }

@@ -11,8 +11,8 @@ import { StoreModule } from '@ngrx/store';
 import { AboutModule } from './about/about.module';
 import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
-import { ReservationModule } from "./reservation/reservation.module";
-import { FlightModule } from "./flight/flight.module";
+import { ReservationModule } from './reservation/reservation.module';
+import { FlightModule } from './flight/flight.module';
 import { DestinationModule } from './destination/destination.module';
 import { appState } from './app.state';
 

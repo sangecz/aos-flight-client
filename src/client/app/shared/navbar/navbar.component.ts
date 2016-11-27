@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 /**
  * This class represents the navigation bar component.
@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
   selector: 'sd-navbar',
   templateUrl: 'navbar.component.html',
   styleUrls: ['navbar.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class NavbarComponent { }

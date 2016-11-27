@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
 import { Config } from './shared/index';
 import './operators';
 
@@ -9,10 +10,21 @@ import './operators';
 @Component({
   moduleId: module.id,
   selector: 'sd-app',
-  templateUrl: 'app.component.html',
+  template: `
+    <sd-toolbar></sd-toolbar>
+    <sd-navbar></sd-navbar>
+
+    <router-outlet></router-outlet>
+    
+    <ng2-toasty></ng2-toasty>
+  `
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  ngOnInit(): void {
+  }
+
   constructor() {
     console.log('Environment config', Config);
   }

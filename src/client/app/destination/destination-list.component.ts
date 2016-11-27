@@ -2,7 +2,7 @@
  * Created by sange on 22/11/2016.
  */
 
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   moduleId: module.id,
@@ -32,24 +32,15 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
       tr:nth-child(odd) {
         background-color: #efefef;
       }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DestinationListComponent implements OnInit {
+export class DestinationListComponent {
 
-  @Output()
-  destinationSelected = new EventEmitter<Destination>();
-
-  @Output()
-  sortChanged = new EventEmitter<void>();
-
-  @Input()
-  destinations: Destination[];
-
-  @Input()
-  sortClass: string;
-
-  ngOnInit() {
-  }
+  @Output() destinationSelected = new EventEmitter<Destination>();
+  @Output() sortChanged = new EventEmitter<void>();
+  @Input() destinations: Destination[];
+  @Input() sortClass: string;
 
   changeSort() {
     this.sortChanged.emit();

@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastyService } from 'ng2-toasty';
 
 import { DestinationService } from '../shared/index';
-import { SortService } from "../shared/sort/sort.service";
+import { SortService } from '../shared/sort/sort.service';
 import { Observable } from 'rxjs/Observable';
 import { DestinationState, DESTINATION_TAG } from '../shared/destination/destination.state';
+import { ToastUtils } from '../shared/util/util';
 
 const sortField = 'name';
 
@@ -15,8 +17,6 @@ const sortField = 'name';
     <h2>Add destination</h2>
     <destination-form [destination]="selectedDestination" (onDestinationChange)="addDestination($event)"></destination-form>
     
-    <error-message [errorMessage]="errorMessage"></error-message>
-    
     <destination-list
       [destinations]="destinations"
       [sortClass]="(state$ | async)?.sort?.order"
@@ -26,14 +26,14 @@ const sortField = 'name';
 })
 export class DestinationComponent implements OnInit {
 
-  errorMessage: string;
   destinations: Destination[];
   selectedDestination: Destination;
   state$: Observable<DestinationState>;
 
   constructor(public destinationService: DestinationService,
               private router: Router,
-              private sortService: SortService) {
+              private sortService: SortService,
+              private toast: ToastyService) {
     this.state$ = <Observable<DestinationState>> sortService.registerSort(DESTINATION_TAG, sortField);
   }
 
@@ -47,7 +47,7 @@ export class DestinationComponent implements OnInit {
         this.destinationService.getAll(state.sort)
           .subscribe(
             destinations => this.destinations = destinations,
-            error => this.errorMessage = error
+            err => this.toast.error(ToastUtils.set(err))
           );
       });
   }
@@ -56,7 +56,7 @@ export class DestinationComponent implements OnInit {
     this.destinationService.create(destination)
       .subscribe(
         res => this.getDestinations(),
-        err => this.errorMessage = err
+        err => this.toast.error(ToastUtils.set(err))
       );
   }
 

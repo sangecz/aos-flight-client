@@ -1,11 +1,12 @@
 /**
  * Created by sange on 23/10/2016.
  */
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {FormGroup, Validators, FormBuilder} from "@angular/forms";
-import {Constants} from "../shared/config/app.constants";
-import {DestinationService} from "../shared/destination/destination.service";
-import {validateDateTime} from "../shared/forms/validator";
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Constants } from '../shared/config/app.constants';
+import { DestinationService } from '../shared/destination/destination.service';
+import { validateDateTime } from '../shared/forms/validator';
 
 @Component({
   moduleId: module.id,
@@ -21,21 +22,9 @@ export class FlightFormComponent implements OnInit {
   private destinations: Destination[];
   datetimePlaceholder = Constants.DATETIME_PLACEHOLDER;
 
-  constructor(
-    private fb: FormBuilder,
-    private destinationService: DestinationService
-  ) {
+  constructor(private fb: FormBuilder,
+              private destinationService: DestinationService) {
     this.createForm();
-  }
-
-  private createForm() {
-    this.flightFG = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      dateOfDeparture: ['', [Validators.required, validateDateTime(false)]],
-      seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
-      from: ['', [Validators.required]],
-      to: ['', [Validators.required]]
-    });
   }
 
   @Input()
@@ -79,21 +68,31 @@ export class FlightFormComponent implements OnInit {
     }
   }
 
-  back(){
+  back() {
     this.onBack.emit();
   }
 
-  remove(){
+  remove() {
     this.onRemove.emit(this.flightValue.id);
   }
 
+
+  private createForm() {
+    this.flightFG = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      dateOfDeparture: ['', [Validators.required, validateDateTime(false)]],
+      seats: ['', [Validators.required, Validators.pattern(Constants.regexp.POSITIVE_NUMBER)]],
+      from: ['', [Validators.required]],
+      to: ['', [Validators.required]]
+    });
+  }
 
   private getDestionations() {
     this.destinationService.getAll(null)
       .subscribe(
         res => {
           this.destinations = res;
-          if(this.destinations.length > 0 && !this.detail) {
+          if (this.destinations.length > 0 && !this.detail) {
             this.flightFG.get('from').setValue(this.destinations[0].id);
             this.flightFG.get('to').setValue(this.destinations[0].id);
           }

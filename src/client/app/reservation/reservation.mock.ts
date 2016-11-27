@@ -1,4 +1,4 @@
-import {reservationStates} from "./reservation-states";
+import { reservationStates } from './reservation-states';
 /**
  * Created by sange on 29/10/2016.
  */

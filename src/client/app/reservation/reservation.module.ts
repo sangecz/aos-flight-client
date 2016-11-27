@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ReactiveFormsModule} from "@angular/forms";
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from '../shared/shared.module';
-import {ReservationFormComponent} from "./reservation-form.component";
-import {ReservationDetailComponent} from "./reservation-detail.component";
-import {ReservationComponent} from "./reservation.component";
+import { ReservationFormComponent } from './reservation-form.component';
+import { ReservationDetailComponent } from './reservation-detail.component';
+import { ReservationComponent } from './reservation.component';
 
 @NgModule({
   imports: [CommonModule, SharedModule, ReactiveFormsModule],
@@ -13,4 +13,5 @@ import {ReservationComponent} from "./reservation.component";
   exports: [ReservationComponent, ReservationFormComponent, ReservationDetailComponent],
   providers: []
 })
-export class ReservationModule { }
+export class ReservationModule {
+}

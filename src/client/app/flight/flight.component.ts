@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { ToastyService } from 'ng2-toasty';
 
-import { FlightService } from "../shared/flight/flight.service";
-import { SortService } from "../shared/sort/sort.service";
-import { DepartureFilter } from "../shared/filter/filter";
-import { Pagination } from "../shared/pagination/pagination";
+import { FlightService } from '../shared/flight/flight.service';
+import { SortService } from '../shared/sort/sort.service';
+import { DepartureFilter } from '../shared/filter/filter';
+import { Pagination } from '../shared/pagination/pagination';
 import { FlightState, FLIGHT_TAG } from '../shared/flight/flight.state';
+import { ToastUtils } from '../shared/util/util';
 
 @Component({
   moduleId: module.id,
@@ -15,14 +17,6 @@ import { FlightState, FLIGHT_TAG } from '../shared/flight/flight.state';
   styleUrls: ['flight.component.css'],
 })
 export class FlightComponent implements OnInit {
-
-  errorMessage: string;
-  // orderValue: number = 0;
-
-  // sorts: Sort[] = [
-  //   {order: null, field: this.nameField},
-  //   {order: null, field: this.departureField}
-  // ];
 
   departureField = 'dateOfDeparture';
   nameField = 'name';
@@ -37,7 +31,8 @@ export class FlightComponent implements OnInit {
 
   constructor(public flightService: FlightService,
               private router: Router,
-              private sortService: SortService) {
+              private sortService: SortService,
+              private toast: ToastyService) {
     this.state$ = <Observable<FlightState>> sortService.registerSort(FLIGHT_TAG, this.nameField);
   }
 
@@ -54,7 +49,7 @@ export class FlightComponent implements OnInit {
               this.flights = res[0];
               this.recordCount = res[1];
             },
-            (error) => this.errorMessage = error
+            (err) => this.toast.error(ToastUtils.set(err))
           );
       });
   }
@@ -63,7 +58,7 @@ export class FlightComponent implements OnInit {
     this.flightService.create(flight)
       .subscribe(
         res => this.getFlights(),
-        err => this.errorMessage = err
+        err => this.toast.error(ToastUtils.set(err))
       );
 
   }

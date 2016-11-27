@@ -2,8 +2,6 @@
 
 <reservation-form [reservation]="selectedReservation" (onReservationChange)="addReservation($event)"></reservation-form>
 
-<error-message [errorMessage]="errorMessage"></error-message>
-
 <div [hidden]="!createdReservation">
   <!-- TODO pouzit heslo pro vstup do rezervace -->
   <h5>Last created reservation:</h5>

@@ -1,24 +1,38 @@
 /**
  * Created by sange on 23/10/2016.
  */
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ToastyService } from 'ng2-toasty';
 
-import {FlightService} from "../shared/flight/flight.service";
+import { ToastUtils } from '../shared/util/util';
+import { FlightService } from '../shared/flight/flight.service';
 
 @Component({
   moduleId: module.id,
   selector: 'flight-detail',
-  templateUrl: 'flight-detail.component.html'
+  template: `
+    <h2>Edit flight</h2>
+
+    <flight-form
+      [flight]="selectedFlight"
+      [isDetail]="true"
+      (onFlightChange)="saveFlight($event)"
+      (onRemove)="removeFlight($event)"
+      (onBack)="back($event)"
+    >
+    
+    </flight-form>
+  `
 })
 export class FlightDetailComponent implements OnInit {
 
-  errorMessage: string;
   selectedFlight: Flight;
 
   constructor(public flightService: FlightService,
               public route: ActivatedRoute,
-              public router: Router) {
+              public router: Router,
+              private toast: ToastyService) {
   }
 
   ngOnInit() {
@@ -27,7 +41,7 @@ export class FlightDetailComponent implements OnInit {
       this.flightService.getOne(id)
         .subscribe(
           flight => this.selectedFlight = flight,
-          err => this.errorMessage = err
+          err => this.toast.error(ToastUtils.set(err))
         );
     });
   }
@@ -38,7 +52,7 @@ export class FlightDetailComponent implements OnInit {
       this.flightService.update(flight)
         .subscribe(
           () => this.back(),
-          err => this.errorMessage = err
+          err => this.toast.error(ToastUtils.set(err))
         );
     }
   }
@@ -47,7 +61,7 @@ export class FlightDetailComponent implements OnInit {
     this.flightService.remove(id)
       .subscribe(
         () => this.back(),
-        err => this.errorMessage = err
+        err => this.toast.error(ToastUtils.set(err))
       );
   }
 

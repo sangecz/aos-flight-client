@@ -43,11 +43,24 @@ export class ProjectConfig extends SeedConfig {
     this.APP_ASSETS = [
       ...this.APP_ASSETS,
       // {src: `${this.APP_SRC}/your-path-to-lib/libs/jquery-ui.js`, inject: true, vendor: false}
-      // {src: `${this.CSS_SRC}/path-to-lib/test-lib.css`, inject: true, vendor: false},
+      {src: `node_modules/ng2-toasty/style.css`, inject: true, vendor: true},
+      {src: `node_modules/ng2-toasty/style-material.css`, inject: true, vendor: true}
     ];
 
     /* Add to or override NPM module configurations: */
     // this.mergeObject(this.PLUGIN_CONFIGS['browser-sync'], { ghostMode: false });
+
+
+    this.mergeObject(this.SYSTEM_CONFIG_DEV['paths'], {
+      'ng2-toasty': 'node_modules/ng2-toasty/index.js'
+    });
+
+    this.mergeObject(this.SYSTEM_BUILDER_CONFIG['packages'], {
+      'ng2-toasty': {
+        main: './index.js',
+        defaultExtension: 'js'
+      },
+    });
   }
 
 }

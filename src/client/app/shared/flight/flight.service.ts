@@ -3,15 +3,13 @@ import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
-import { Constants } from "../config/app.constants";
-import { DestinationService } from "../destination/destination.service";
-import { Config } from "../config/env.config";
+import { Constants } from '../config/app.constants';
+import { DestinationService } from '../destination/destination.service';
+import { Config } from '../config/env.config';
 import { Sort } from '../sort/sort';
 import { DepartureFilter } from '../filter/filter';
 import { Pagination } from '../pagination/pagination';
 
-// const endpoint = 'flights';
-// const apiUrl = '/api';
 const apiUrl = Config.API;
 const endpoint = 'flight';
 
@@ -38,6 +36,7 @@ export class FlightService {
     }
 
     if (filter && (filter.from || filter.to)) {
+      // gets JSON date format without quotes
       let from = JSON.stringify(filter.from);
       let to = JSON.stringify(filter.to);
       from = from.slice(1, from.length - 1);
@@ -124,8 +123,6 @@ export class FlightService {
   private deleteProperties(flight: Flight) {
     delete flight.id;
     delete flight.url;
-    // delete flight.distance;
-    // delete flight.price;
     delete flight.fromName;
     delete flight.toName;
   }
@@ -142,4 +139,3 @@ export class FlightService {
     return headers;
   }
 }
-

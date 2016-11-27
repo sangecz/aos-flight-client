@@ -1,12 +1,12 @@
 /**
  * Created by sange on 05/11/2016.
  */
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {DepartureFilter} from "../shared/filter/filter";
-import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {validateDateTime} from "../shared/forms/validator";
-import {Constants} from "../shared/config/app.constants";
-import {Util} from "../shared/util/util";
+import { Component, Output, EventEmitter } from '@angular/core';
+
+import { DepartureFilter } from '../shared/filter/filter';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { validateDateTime } from '../shared/forms/validator';
+import { Constants } from '../shared/config/app.constants';
 
 @Component({
   moduleId: module.id,
@@ -14,7 +14,7 @@ import {Util} from "../shared/util/util";
   templateUrl: 'departure-filter.component.html',
   styleUrls: ['departure-filter.component.css']
 })
-export class DepartureFilterComponent implements OnInit {
+export class DepartureFilterComponent {
 
   filterFG: FormGroup;
   datetimePlaceholder = Constants.DATETIME_PLACEHOLDER;
@@ -22,20 +22,8 @@ export class DepartureFilterComponent implements OnInit {
   @Output()
   onDepartureFilterChange = new EventEmitter<DepartureFilter>();
 
-  constructor(
-    private fb: FormBuilder,
-  ) {
+  constructor(private fb: FormBuilder,) {
     this.createForm();
-  }
-
-  private createForm() {
-    this.filterFG = this.fb.group({
-      from: ['', [validateDateTime(true)]],
-      to: ['', [validateDateTime(true)]]
-    });
-  }
-
-  ngOnInit() {
   }
 
   onSubmit() {
@@ -44,7 +32,7 @@ export class DepartureFilterComponent implements OnInit {
     }
   }
 
-  clearFilter(){
+  clearFilter() {
     this.createForm();
     let filter: DepartureFilter = {
       from: null,
@@ -57,7 +45,7 @@ export class DepartureFilterComponent implements OnInit {
     const from = this.filterFG.get('from').value;
     const to = this.filterFG.get('to').value;
     let filter: DepartureFilter = {
-      from: !isNaN(new Date(from).getTime())? new Date(from) : null,
+      from: !isNaN(new Date(from).getTime()) ? new Date(from) : null,
       to: !isNaN(new Date(to).getTime()) ? new Date(to) : null
     };
     console.log();
@@ -67,5 +55,12 @@ export class DepartureFilterComponent implements OnInit {
   disableApply(): boolean {
     // const ret = this.filterFG.valid && (this.filterFG.get('from').value !== '' || this.filterFG.get('to').value !== '');
     return false;
+  }
+
+  private createForm() {
+    this.filterFG = this.fb.group({
+      from: ['', [validateDateTime(true)]],
+      to: ['', [validateDateTime(true)]]
+    });
   }
 }

@@ -1,14 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Http, Response, RequestOptions, Headers} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
-import {Constants} from "../config/app.constants";
-import {Sort} from "../sort/sort";
-import {Config} from "../config/env.config";
+import { Constants } from '../config/app.constants';
+import { Sort } from '../sort/sort';
+import { Config } from '../config/env.config';
 
-// const endpoint = 'destinations';
-// const apiUrl = '/api';
 const apiUrl = Config.API;
 const endpoint = 'destination';
 
@@ -25,10 +23,10 @@ export class DestinationService {
    * @param sort 1 == asc ... -1 == desc
    */
   getAll(sort: Sort): Observable<Destination[]> {
-    if(sort && sort.order) {
+    if (sort && sort.order) {
       this.options.headers.set(Constants.headers.xOrder, `${sort.order}`);
     } else {
-      if(this.options.headers.get(Constants.headers.xOrder)) {
+      if (this.options.headers.get(Constants.headers.xOrder)) {
         this.options.headers.delete(Constants.headers.xOrder);
       }
     }
