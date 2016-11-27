@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
-import {FlightService} from "../shared/flight/flight.service";
-import {SortService} from "../shared/sort/sort.service";
-import {Sort} from "../shared/sort/sort";
-import {DepartureFilter} from "../shared/filter/filter";
-import {Pagination} from "../shared/pagination/pagination";
+import { Component, OnInit } from '@angular/core';
+import { Router } from "@angular/router";
+import { Observable } from 'rxjs/Observable';
+
+import { FlightService } from "../shared/flight/flight.service";
+import { SortService } from "../shared/sort/sort.service";
+import { DepartureFilter } from "../shared/filter/filter";
+import { Pagination } from "../shared/pagination/pagination";
+import { FlightState, FLIGHT_TAG } from '../shared/flight/flight.state';
 
 @Component({
   moduleId: module.id,
@@ -15,15 +17,17 @@ import {Pagination} from "../shared/pagination/pagination";
 export class FlightComponent implements OnInit {
 
   errorMessage: string;
-  orderValue: number = 0;
+  // orderValue: number = 0;
+
+  // sorts: Sort[] = [
+  //   {order: null, field: this.nameField},
+  //   {order: null, field: this.departureField}
+  // ];
+
   departureField = 'dateOfDeparture';
   nameField = 'name';
-  sorts: Sort[] = [
-    {order: null, field: this.nameField},
-    {order: null, field: this.departureField}
-  ];
-
   selectedSortField = this.departureField;
+  state$: Observable<FlightState>;
   filter: DepartureFilter;
   pagination: Pagination;
 
@@ -34,23 +38,25 @@ export class FlightComponent implements OnInit {
   constructor(public flightService: FlightService,
               private router: Router,
               private sortService: SortService) {
+    this.state$ = <Observable<FlightState>> sortService.registerSort(FLIGHT_TAG, this.nameField);
   }
 
   ngOnInit() {
     this.getFlights();
-    this.sortService.setSorts(this.sorts[0], this.sorts[1]);
   }
 
   getFlights() {
-    const sort = this.sortService.getSortFor(this.selectedSortField);
-    this.flightService.getAll(sort, this.filter, this.pagination)
-      .subscribe(
-        (res) => {
-          this.flights = res[0];
-          this.recordCount = res[1];
-        },
-        (error) => this.errorMessage = error
-      );
+    this.state$.subscribe(
+      state => {
+        this.flightService.getAll(state.sort, this.filter, this.pagination)
+          .subscribe(
+            (res) => {
+              this.flights = res[0];
+              this.recordCount = res[1];
+            },
+            (error) => this.errorMessage = error
+          );
+      });
   }
 
   addFlight(flight: Flight) {
@@ -69,16 +75,18 @@ export class FlightComponent implements OnInit {
   changeSort(field: string) {
     if (field !== this.selectedSortField) {
       this.selectedSortField = field;
-      this.orderValue = 0;
+      // this.orderValue = 0;
+      this.sortService.switchSort(FLIGHT_TAG, field);
     }
-    this.orderValue = (this.orderValue + 1) % 3;
-    this.sortService.changeOrderFor(this.selectedSortField, this.orderValue);
+    this.sortService.toggleSort(FLIGHT_TAG, field);
     this.getFlights();
   }
 
-  getSortClass(field: string): string {
-    const sort: Sort = this.sortService.getSortFor(field);
-    return sort && sort.order ? sort.order : ''
+  getSortClass(field: string): Observable<any> {
+    if (this.selectedSortField === field) {
+      return this.state$;
+    }
+    return Observable.of({sort: {order: ''}});
   }
 
   getFilterClass(): string {

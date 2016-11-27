@@ -14,3 +14,4 @@ export interface Sort {
  * 2 == desc
  */
 export type SortOrder = 0 | 1 | 2
+

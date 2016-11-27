@@ -4,17 +4,13 @@
 
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
-import { sortNameField } from '../shared/sort/sort.reducer';
-import { Sort } from '../shared/sort/sort';
-import { SortService } from '../shared/sort/sort.service';
-
 @Component({
   moduleId: module.id,
   selector: 'destination-list',
   template: ` <h2>Destination list</h2>
               <table>
                 <tr>
-                  <th (click)="changeSort()" [ngClass]="getSortClass()">Name</th>
+                  <th (click)="changeSort()" [ngClass]="sortClass">Name</th>
                   <th>Latitude</th>
                   <th>Longitude</th>
                 </tr>
@@ -40,13 +36,6 @@ import { SortService } from '../shared/sort/sort.service';
 })
 export class DestinationListComponent implements OnInit {
 
-  /**
-   * 0 == no sort
-   * 1 == asc
-   * 2 == desc
-   */
-  private orderValue: number = 0;
-
   @Output()
   destinationSelected = new EventEmitter<Destination>();
 
@@ -56,20 +45,14 @@ export class DestinationListComponent implements OnInit {
   @Input()
   destinations: Destination[];
 
-  constructor(private sortService: SortService) {
-  }
+  @Input()
+  sortClass: string;
 
   ngOnInit() {
   }
 
   changeSort() {
-    this.orderValue = (this.orderValue + 1) % 3;
-    this.sortService.changeOrderFor(sortNameField, this.orderValue);
     this.sortChanged.emit();
-  }
-
-  getSortClass(): string {
-    return this.sortService.getSortFor(sortNameField).order ? this.sortService.getSortFor(sortNameField).order : ''
   }
 
   selectDestination(dest: Destination) {

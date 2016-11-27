@@ -14,8 +14,8 @@
 
 <table>
   <tr>
-    <th (click)="changeSort(nameField)" [ngClass]="getSortClass(nameField)">Name</th>
-    <th (click)="changeSort(departureField)" [ngClass]="[getSortClass(departureField), getFilterClass()]">Departure</th>
+    <th (click)="changeSort(nameField)" [ngClass]="(getSortClass(nameField) | async)?.sort?.order">Name</th>
+    <th (click)="changeSort(departureField)" [ngClass]="[(getSortClass(departureField) | async)?.sort?.order, getFilterClass()]">Departure</th>
     <th>Distance</th>
     <th>Seats</th>
     <th>Price</th>

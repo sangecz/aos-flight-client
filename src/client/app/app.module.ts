@@ -11,17 +11,15 @@ import { StoreModule } from '@ngrx/store';
 import { AboutModule } from './about/about.module';
 import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
-import {ReservationModule} from "./reservation/reservation.module";
-// import {InMemoryWebApiModule} from "angular2-in-memory-web-api";
-import {FlightModule} from "./flight/flight.module";
-import { sortReducer } from './shared/sort/sort.reducer';
+import { ReservationModule } from "./reservation/reservation.module";
+import { FlightModule } from "./flight/flight.module";
 import { DestinationModule } from './destination/destination.module';
+import { appState } from './app.state';
 
 @NgModule({
   imports: [
     BrowserModule,
     HttpModule,
-    // InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 500 }),
     RouterModule.forRoot(routes),
     AboutModule,
     HomeModule,
@@ -29,7 +27,7 @@ import { DestinationModule } from './destination/destination.module';
     ReservationModule,
     FlightModule,
     SharedModule.forRoot(),
-    StoreModule.provideStore({sort: sortReducer}),
+    StoreModule.provideStore(appState),
     StoreDevtoolsModule.instrumentOnlyWithExtension()
   ],
   declarations: [AppComponent],
@@ -44,4 +42,5 @@ import { DestinationModule } from './destination/destination.module';
 
 })
 
-export class AppModule { }
+export class AppModule {
+}

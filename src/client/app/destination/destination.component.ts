@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from "@angular/router";
 
 import { DestinationService } from '../shared/index';
 import { SortService } from "../shared/sort/sort.service";
-import { Sort } from '../shared/sort/sort';
-import { sortNameField } from '../shared/sort/sort.reducer';
+import { Observable } from 'rxjs/Observable';
+import { DestinationState, DESTINATION_TAG } from '../shared/destination/destination.state';
+
+const sortField = 'name';
 
 @Component({
   moduleId: module.id,
@@ -17,6 +19,7 @@ import { sortNameField } from '../shared/sort/sort.reducer';
     
     <destination-list
       [destinations]="destinations"
+      [sortClass]="(state$ | async)?.sort?.order"
       (destinationSelected)="selectDestination($event)"
       (sortChanged)="changeSort()"
     ></destination-list>`
@@ -26,24 +29,27 @@ export class DestinationComponent implements OnInit {
   errorMessage: string;
   destinations: Destination[];
   selectedDestination: Destination;
+  state$: Observable<DestinationState>;
 
   constructor(public destinationService: DestinationService,
               private router: Router,
-              private sortService: SortService
-  ) {
+              private sortService: SortService) {
+    this.state$ = <Observable<DestinationState>> sortService.registerSort(DESTINATION_TAG, sortField);
   }
 
   ngOnInit() {
     this.getDestinations();
-    this.sortService.setSorts({order: null, field: sortNameField});
   }
 
   getDestinations() {
-    this.destinationService.getAll(this.sortService.getSortFor(sortNameField))
-      .subscribe(
-        destinations => this.destinations = destinations,
-        error => this.errorMessage = error
-      );
+    this.state$.subscribe(
+      state => {
+        this.destinationService.getAll(state.sort)
+          .subscribe(
+            destinations => this.destinations = destinations,
+            error => this.errorMessage = error
+          );
+      });
   }
 
   addDestination(destination: Destination) {
@@ -59,6 +65,8 @@ export class DestinationComponent implements OnInit {
   }
 
   changeSort() {
+    this.sortService.toggleSort(DESTINATION_TAG, sortField);
     this.getDestinations();
   }
+
 }
