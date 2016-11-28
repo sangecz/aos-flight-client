@@ -42,13 +42,9 @@ export class DestinationDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.forEach((params: Params) => {
-      let id: number = +params['id']; // + konvertuje string na number
-      this.destinationService.getOne(id)
-        .subscribe(
-          destination => this.selectedDestination = destination,
-          err => this.toast.error(ToastUtils.set(err))
-        );
+    this.route.data.subscribe((data: {destination: Destination}) => {
+      console.log(data);
+      this.selectedDestination = data.destination;
     });
   }
 

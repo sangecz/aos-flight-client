@@ -42,20 +42,13 @@ export class ReservationDetailComponent implements OnInit {
   constructor(public reservationService: ReservationService,
               public route: ActivatedRoute,
               public router: Router,
-              private toast: ToastyService,
-              private flightService: FlightService) {
+              private toast: ToastyService) {
   }
 
   ngOnInit() {
-    this.getFlights();
-
-    this.route.params.forEach((params: Params) => {
-      let id = +params['id']; // + konvertuje string na number
-      this.reservationService.getOne(id)
-        .subscribe(
-          reservation => this.selectedReservation = reservation,
-          err => this.toast.error(ToastUtils.set(err))
-        );
+    this.route.data.subscribe((data: {obj: {flights: Flight[], reservation: Reservation}}) => {
+      this.flights = data.obj.flights;
+      this.selectedReservation = data.obj.reservation;
     });
   }
 
@@ -81,16 +74,6 @@ export class ReservationDetailComponent implements OnInit {
     this.reservationService.pay(this.selectedReservation.id)
       .subscribe(
         () => this.back(),
-        err => this.toast.error(ToastUtils.set(err))
-      );
-  }
-
-  getFlights() {
-    this.flightService.getAll(null, null, null)
-      .subscribe(
-        res => {
-          this.flights = res[0];
-        },
         err => this.toast.error(ToastUtils.set(err))
       );
   }

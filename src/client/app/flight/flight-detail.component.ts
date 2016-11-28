@@ -39,22 +39,15 @@ export class FlightDetailComponent implements OnInit {
   selectedFlight: Flight;
 
   constructor(public flightService: FlightService,
-              private destinationService: DestinationService,
               public route: ActivatedRoute,
               public router: Router,
               private toast: ToastyService) {
   }
 
   ngOnInit() {
-    this.getDestinations();
-
-    this.route.params.forEach((params: Params) => {
-      let id = +params['id']; // + konvertuje string na number
-      this.flightService.getOne(id)
-        .subscribe(
-          flight => this.selectedFlight = flight,
-          err => this.toast.error(ToastUtils.set(err))
-        );
+    this.route.data.subscribe((data: {obj: {flight: Flight, destinations: Destination[]}}) => {
+      this.selectedFlight = data.obj.flight;
+      this.destinations = data.obj.destinations;
     });
   }
 
@@ -72,14 +65,6 @@ export class FlightDetailComponent implements OnInit {
     this.flightService.remove(id)
       .subscribe(
         () => this.back(),
-        err => this.toast.error(ToastUtils.set(err))
-      );
-  }
-
-  private getDestinations() {
-    this.destinationService.getAll(null)
-      .subscribe(
-        res => this.destinations = res,
         err => this.toast.error(ToastUtils.set(err))
       );
   }

@@ -45,6 +45,7 @@ export class ReservationFormComponent implements OnInit {
     this.reservationValue = val || Object.assign({});
 
     if (val && val.flight && val.seats && val.created && val.state) {
+      // overriden by ngOnInit call later
       this.reservationFG.setValue({
         flight: val.flight,
         seats: val.seats,
@@ -60,6 +61,7 @@ export class ReservationFormComponent implements OnInit {
       this._flights = flights;
 
       if (!this.detail && this._flights.length > 0 && !this.detail) {
+        // overriden by ngOnInit call later
         this.reservationFG.get('flight').setValue(this._flights[0].id);
       }
     }
@@ -74,10 +76,10 @@ export class ReservationFormComponent implements OnInit {
       this.submitTxt = 'Cancel reservation';
 
       this.reservationFG.reset({
-        flight: {value: '', disabled: true},
-        seats: {value: '', disabled: true},
-        created: {value: '', disabled: true},
-        state: {value: '', disabled: true}
+        flight: {value: this._flights[0].id, disabled: true},
+        seats: {value: this.reservationValue.seats, disabled: true},
+        created: {value: this.reservationValue.created, disabled: true},
+        state: {value: this.reservationValue.state, disabled: true}
       });
 
     } else {

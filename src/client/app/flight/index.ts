@@ -8,3 +8,4 @@ export * from './flight-form.component';
 export * from './flight-list.component';
 export * from './flight.mock';
 export * from './departure-filter.component';
+export * from './flight-detail-resolve.service';

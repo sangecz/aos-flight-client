@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
 import { ReservationDetailComponent } from './reservation-detail.component';
 import { ReservationComponent } from './reservation.component';
+import { ReservationDetailResolve } from './reservation-detail-resolve.service';
 
 export const ReservationRoutes: Route[] = [
   {
@@ -9,6 +10,9 @@ export const ReservationRoutes: Route[] = [
   },
   {
     path: 'client/reservation/:id',
-    component: ReservationDetailComponent
+    component: ReservationDetailComponent,
+    resolve: {
+      obj: ReservationDetailResolve
+    }
   }
 ];
