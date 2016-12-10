@@ -3,6 +3,24 @@
  */
 export const Constants = {
 
+  users: {
+    admin: {
+      username: 'admin',
+      password: '123456',
+      role: 'ROLE_ADMIN'
+    },
+    manager: {
+      username: 'manager',
+      password: '123456',
+      role: 'ROLE_MANAGER'
+    },
+    user: {
+      username: 'argrgdgdf',
+      password: 'passsdfhsfghfwd',
+      role: ''
+    }
+  },
+
   headers: {
     xOrder: 'X-Order',
     xPassword: 'X-Password',

@@ -43,7 +43,6 @@ export class DestinationDetailComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe((data: {destination: Destination}) => {
-      console.log(data);
       this.selectedDestination = data.destination;
     });
   }

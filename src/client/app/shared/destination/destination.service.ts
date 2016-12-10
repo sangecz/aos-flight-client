@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
 import { Constants } from '../config/app.constants';
 import { Sort } from '../sort/sort';
 import { Config } from '../config/env.config';
+import { HttpClientService } from '../http-client/http-client.service';
 
 const apiUrl = Config.API;
 const endpoint = 'destination';
@@ -13,10 +14,10 @@ const endpoint = 'destination';
 @Injectable()
 export class DestinationService {
 
-  private options: RequestOptions;
+  headers: Headers;
 
-  constructor(private http: Http) {
-    this.options = new RequestOptions({headers: this.createHeaders()});
+  constructor(private httpClient: HttpClientService) {
+    this.headers = new Headers();
   }
 
   /**
@@ -24,41 +25,36 @@ export class DestinationService {
    */
   getAll(sort: Sort): Observable<Destination[]> {
     if (sort && sort.order) {
-      this.options.headers.set(Constants.headers.xOrder, `${sort.order}`);
+      this.headers.set(Constants.headers.xOrder, `${sort.order}`);
     } else {
-      if (this.options.headers.get(Constants.headers.xOrder)) {
-        this.options.headers.delete(Constants.headers.xOrder);
+      if (this.headers.get(Constants.headers.xOrder)) {
+        this.headers.delete(Constants.headers.xOrder);
       }
     }
 
-    return this.http.get(`${apiUrl}/${endpoint}`, this.options)
-      .map((res: Response) => res.json())
-      .catch(this.handleError);
+    return this.httpClient.getAll(`${apiUrl}/${endpoint}`, this.headers, false)
+      .map((res: Response) => res.json());
   }
 
   getOne(id: number): Observable<Destination> {
-    return this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .map((res: Response) => res.json())
-      .catch(this.handleError);
+    return this.httpClient.getOne(`${apiUrl}/${endpoint}/${id}`, null, false)
+      .map((res: Response) => res.json());
   }
 
   create(destination: Destination): Observable<Response> {
     this.deleteProperties(destination);
-    return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(destination), this.options)
-      .catch(this.handleError);
+    return this.httpClient.create(`${apiUrl}/${endpoint}`, JSON.stringify(destination), true);
   }
 
   update(destination: Destination): Observable<Response> {
     const id = destination.id;
     this.deleteProperties(destination);
 
-    return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(destination), this.options)
-      .catch(this.handleError);
+    return this.httpClient.update(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(destination), null, true);
   }
 
   remove(id: number): Observable<Response> {
-    return this.http.delete(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .catch(this.handleError);
+    return this.httpClient.remove(`${apiUrl}/${endpoint}/${id}`, true);
   }
 
   private deleteProperties(destination: Destination) {
@@ -66,16 +62,5 @@ export class DestinationService {
     delete destination.url;
   }
 
-  private handleError(error: any) {
-    let errMsg = (error.message) ? error.message : error.status;
-    return Observable.throw('Error: ' + errMsg);
-  }
-
-  private createHeaders() {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
-    return headers;
-  }
 }
 

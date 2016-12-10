@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
@@ -7,6 +7,7 @@ import { Config } from '../config/env.config';
 import { reservationStates } from '../../reservation/reservation-states';
 import { Constants } from '../config/app.constants';
 import { FlightService } from '../flight/flight.service';
+import { HttpClientService } from '../http-client/http-client.service';
 
 const apiUrl = Config.API;
 const endpoint = 'reservation';
@@ -14,21 +15,21 @@ const endpoint = 'reservation';
 @Injectable()
 export class ReservationService {
 
-  private options: RequestOptions;
+  private headers: Headers;
 
   constructor(private flightService: FlightService,
-              private http: Http) {
-    this.options = new RequestOptions({headers: this.createHeaders()});
+              private httpClient: HttpClientService) {
+    this.headers = new Headers();
   }
 
   getAll(): Observable<any> {
     return Observable.forkJoin(
-      this.http.get(`${apiUrl}/${endpoint}`, this.options).map((res: Response) => res.json()),
+      this.httpClient.getAll(`${apiUrl}/${endpoint}`, null, true).map((res: Response) => res.json()),
       this.flightService.getAll(null, null, null)
       )
       .map(res => {
-        let flights: Flight[] = res[1][0];
         let reservations: Reservation[] = res[0];
+        let flights: Flight[] = res[1][0];
 
         reservations.forEach((r: Reservation) => {
           flights.forEach((f: Flight) => {
@@ -37,15 +38,16 @@ export class ReservationService {
         });
 
         return [reservations, flights];
-      })
-      .catch(this.handleError);
+      });
   }
 
-  // TODO pridat hlavicku: X-Password
-  getOne(id: number): Observable<Reservation> {
+  getOne(id: number, password: string): Observable<Reservation> {
+
+    this.headers.append(Constants.headers.xPassword, password);
 
     return Observable.forkJoin(
-      this.http.get(`${apiUrl}/${endpoint}/${id}`, this.options).map((res: Response) => res.json()),
+      // FIXME auth = false, jen x-pwd
+      this.httpClient.getOne(`${apiUrl}/${endpoint}/${id}`, this.headers, true).map((res: Response) => res.json()),
       this.flightService.getAll(null, null, null)
       )
       .map(res => {
@@ -57,38 +59,32 @@ export class ReservationService {
         });
 
         return reservation;
-      })
-      .catch(this.handleError);
+      });
   }
 
   create(reservation: Reservation): Observable<Reservation> {
     this.deleteProperties(reservation);
     delete reservation.state; // na serveru prirazen stav NEW
-    return this.http.post(`${apiUrl}/${endpoint}`, JSON.stringify(reservation), this.options)
+    return this.httpClient.create(`${apiUrl}/${endpoint}`, JSON.stringify(reservation), false)
       .map((res: Response) => res.json())
-      .catch(this.handleError);
   }
 
-  update(reservation: Reservation): Observable<Response> {
+  update(reservation: Reservation, password: string): Observable<Response> {
     const id = reservation.id;
-    const password: string = reservation.password;
     this.deleteProperties(reservation);
     reservation.state = reservationStates.CANCELED;
 
-    this.options.headers.append(Constants.headers.xPassword, password);
-
-    return this.http.put(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(reservation), this.options)
-      .catch(this.handleError);
+    this.headers.append(Constants.headers.xPassword, password);
+    // FIXME auth = false, jen x-pwd
+    return this.httpClient.update(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(reservation), this.headers, true);
   }
 
   remove(id: number): Observable<Response> {
-    return this.http.delete(`${apiUrl}/${endpoint}/${id}`, this.options)
-      .catch(this.handleError);
+    return this.httpClient.remove(`${apiUrl}/${endpoint}/${id}`, true)
   }
 
   pay(id: number): Observable<Response> {
-    return this.http.post(`${apiUrl}/${endpoint}/${id}/payment`, JSON.stringify({cardNo: '1234567812345678'}), this.options)
-      .catch(this.handleError);
+    return this.httpClient.create(`${apiUrl}/${endpoint}/${id}/payment`, JSON.stringify({cardNo: '1234567812345678'}), false);
   }
 
   private deleteProperties(reservation: Reservation) {
@@ -97,20 +93,5 @@ export class ReservationService {
     delete reservation.created;
     delete reservation.password;
     delete reservation.flightName;
-  }
-
-  /**
-   * Handle HTTP error
-   */
-  private handleError(error: any) {
-    let errMsg = (error.message) ? error.message : error.status;
-    return Observable.throw('Error: ' + errMsg);
-  }
-
-  private createHeaders() {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
-    return headers;
   }
 }

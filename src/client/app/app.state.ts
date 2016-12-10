@@ -1,4 +1,4 @@
-import { destinationReducer } from './shared/destination/destination.reducer';
+ import { destinationReducer } from './shared/destination/destination.reducer';
 import { FlightState } from './shared/flight/flight.state';
 import { flightReducer } from './shared/flight/flight.reducer';
 import { DestinationState } from './shared/destination/destination.state';

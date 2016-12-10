@@ -7,6 +7,7 @@ import { SortService } from '../shared/sort/sort.service';
 import { Observable } from 'rxjs/Observable';
 import { DestinationState, DESTINATION_TAG } from '../shared/destination/destination.state';
 import { ToastUtils } from '../shared/util/util';
+import { AuthService } from '../shared/auth/auth.service';
 
 const destinationSortFields = {
   name: 'name'
@@ -16,11 +17,14 @@ const destinationSortFields = {
   moduleId: module.id,
   selector: 'sd-destination',
   template: `
-    <h2>Add destination</h2>
-    <destination-form 
-      [destination]="selectedDestination" 
-      (onDestinationChange)="addDestination($event)">
-    </destination-form>
+
+    <div *ngIf="authService.isAdmin">
+      <h2>Add destination</h2>
+      <destination-form 
+        [destination]="selectedDestination" 
+        (onDestinationChange)="addDestination($event)">
+      </destination-form>
+    </div>
     
     <destination-list
       [destinations]="destinations"
@@ -45,7 +49,8 @@ export class DestinationComponent implements OnInit {
   constructor(public destinationService: DestinationService,
               private router: Router,
               private sortService: SortService,
-              private toast: ToastyService) {
+              private toast: ToastyService,
+              private authService: AuthService) {
     this.state$ = <Observable<DestinationState>> sortService.registerSort(DESTINATION_TAG, destinationSortFields.name);
   }
 

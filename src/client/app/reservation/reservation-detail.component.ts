@@ -54,7 +54,7 @@ export class ReservationDetailComponent implements OnInit {
 
   saveReservation(reservation: Reservation) {
     if (reservation) {
-      this.reservationService.update(reservation)
+      this.reservationService.update(reservation, '')
         .subscribe(
           () => this.back(),
           err => this.toast.error(ToastUtils.set(err))

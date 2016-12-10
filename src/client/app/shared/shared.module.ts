@@ -12,6 +12,9 @@ import { FlightService } from './flight/flight.service';
 import { SortService } from './sort/sort.service';
 import { PaginationComponent } from './pagination/pagination.component';
 import { AuthService } from './auth/auth.service';
+import { HttpClientService } from './http-client/http-client.service';
+import { StoreService } from './util/store.service';
+import { UserSwitchComponent } from './user-switch/user-switch.component';
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
@@ -25,11 +28,13 @@ import { AuthService } from './auth/auth.service';
     ToastyModule.forRoot(),
   ],
   declarations: [
+    UserSwitchComponent,
     ToolbarComponent,
     NavbarComponent,
     PaginationComponent
   ],
   exports: [
+    UserSwitchComponent,
     ToolbarComponent,
     NavbarComponent,
     PaginationComponent,
@@ -48,7 +53,9 @@ export class SharedModule {
         ReservationService,
         FlightService,
         SortService,
-        AuthService
+        AuthService,
+        HttpClientService,
+        StoreService
       ]
     };
   }

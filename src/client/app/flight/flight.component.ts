@@ -10,6 +10,7 @@ import { Pagination } from '../shared/pagination/pagination';
 import { FlightState, FLIGHT_TAG } from '../shared/flight/flight.state';
 import { ToastUtils } from '../shared/util/util';
 import { DestinationService } from '../shared/destination/destination.service';
+import { AuthService } from '../shared/auth/auth.service';
 
 const flightSortFields = {
   name: 'name',
@@ -45,27 +46,14 @@ export class FlightComponent implements OnInit {
               private destinationService: DestinationService,
               private router: Router,
               private sortService: SortService,
-              private toast: ToastyService) {
+              private toast: ToastyService,
+              private authService: AuthService) {
     this.state$ = <Observable<FlightState>> sortService.registerSort(FLIGHT_TAG, this.nameField);
   }
 
   ngOnInit() {
     this.getFlights();
     this.getDestinations();
-  }
-
-  getFlights() {
-    this.state$.subscribe(
-      state => {
-        this.flightService.getAll(state.sort, this.filter, this.pagination)
-          .subscribe(
-            (res) => {
-              this.flights = res[0];
-              this.recordCount = res[1];
-            },
-            (err) => this.toast.error(ToastUtils.set(err))
-          );
-      });
   }
 
   addFlight(flight: Flight) {
@@ -109,6 +97,20 @@ export class FlightComponent implements OnInit {
   applyFilter(filter: DepartureFilter) {
     this.filter = filter;
     this.getFlights();
+  }
+
+  private getFlights() {
+    this.state$.subscribe(
+      state => {
+        this.flightService.getAll(state.sort, this.filter, this.pagination)
+          .subscribe(
+            (res) => {
+              this.flights = res[0];
+              this.recordCount = res[1];
+            },
+            (err) => this.toast.error(ToastUtils.set(err))
+          );
+      });
   }
 
   private getDestinations() {

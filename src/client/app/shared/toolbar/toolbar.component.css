@@ -21,3 +21,8 @@ h1 {
   margin-top: 12px;
   width: 24px;
 }
+
+user-switch {
+  margin-top: 10px;
+  float: right;
+}

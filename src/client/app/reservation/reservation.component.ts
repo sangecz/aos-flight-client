@@ -6,6 +6,7 @@ import { ReservationService } from '../shared/reservation/reservation.service';
 import { AuthService } from '../shared/auth/auth.service';
 import { ToastUtils } from '../shared/util/util';
 import { FlightService } from '../shared/flight/flight.service';
+import { StoreService } from '../shared/util/store.service';
 
 
 @Component({
@@ -28,7 +29,7 @@ import { FlightService } from '../shared/flight/flight.service';
     </div>
     
     <reservation-list
-      [isAdmin]="authService.isAdmin"
+      [visible]="authService.isAdmin || authService.isManager"
       [reservations]="reservations"
       (onReservationSelected)="selectReservation($event)">
     </reservation-list>
@@ -51,7 +52,8 @@ export class ReservationComponent implements OnInit {
               private router: Router,
               public authService: AuthService,
               private toast: ToastyService,
-              private flightService: FlightService) {
+              private flightService: FlightService,
+              private storeService: StoreService) {
   }
 
   ngOnInit() {
@@ -79,6 +81,7 @@ export class ReservationComponent implements OnInit {
   }
 
   selectReservation(reservation: Reservation) {
+    this.storeService.set('pwd', reservation.password);
     this.router.navigate(['/client/reservation', reservation.id]);
   }
 

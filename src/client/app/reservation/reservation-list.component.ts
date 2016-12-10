@@ -8,7 +8,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
   moduleId: module.id,
   selector: 'reservation-list',
   template: `
-    <div *ngIf="isAdmin">
+    <div *ngIf="visible">
       <h2>Reservation list</h2>
       <table class="list">
         <tr>
@@ -32,7 +32,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
 })
 export class ReservationListComponent {
 
-  @Input() isAdmin: boolean;
+  @Input() visible: boolean;
   @Input() reservations: Reservation[];
   @Output() onReservationSelected = new EventEmitter<Reservation>();
 

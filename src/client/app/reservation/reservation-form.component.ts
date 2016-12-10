@@ -7,7 +7,6 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Constants } from '../shared/config/app.constants';
 import { reservationStates } from './reservation-states';
 
-// TODO pridat password pro getOne/update
 @Component({
   moduleId: module.id,
   selector: 'reservation-form',
