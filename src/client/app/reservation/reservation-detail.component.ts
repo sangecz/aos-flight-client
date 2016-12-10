@@ -46,15 +46,12 @@ export class ReservationDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.data.subscribe((data: {obj: {flights: Flight[], reservation: Reservation}}) => {
-      this.flights = data.obj.flights;
-      this.selectedReservation = data.obj.reservation;
-    });
+    this.loadData();
   }
 
   saveReservation(reservation: Reservation) {
     if (reservation) {
-      this.reservationService.update(reservation, '')
+      this.reservationService.update(reservation)
         .subscribe(
           () => this.back(),
           err => this.toast.error(ToastUtils.set(err))
@@ -84,6 +81,13 @@ export class ReservationDetailComponent implements OnInit {
 
   showPayBtn(): boolean {
     return this.selectedReservation && this.selectedReservation.state === reservationStates.NEW;
+  }
+
+  private loadData() {
+    this.route.data.subscribe((data: {obj: {flights: Flight[], reservation: Reservation}}) => {
+      this.flights = data.obj.flights;
+      this.selectedReservation = data.obj.reservation;
+    });
   }
 
 }

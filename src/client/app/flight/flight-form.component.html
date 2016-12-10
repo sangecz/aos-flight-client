@@ -77,8 +77,8 @@
 
     <tr>
       <td>
-        <button type="submit" [disabled]="flightFG.invalid">Save</button>
-        <button *ngIf="detail" type="button" (click)="remove()">Delete</button>
+        <button *ngIf="authService.isAdmin" type="submit" [disabled]="flightFG.invalid">Save</button>
+        <button *ngIf="detail && authService.isAdmin" type="button" (click)="remove()">Delete</button>
         <button *ngIf="detail" type="button" (click)="back()">Back</button>
       </td>
     <tr>

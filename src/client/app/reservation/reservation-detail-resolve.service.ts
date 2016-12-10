@@ -6,7 +6,6 @@ import { ToastyService } from 'ng2-toasty';
 import { ReservationService } from '../shared/reservation/reservation.service';
 import { ToastUtils } from '../shared/util/util';
 import { FlightService } from '../shared/flight/flight.service';
-import { StoreService } from '../shared/util/store.service';
 /**
  * Created by sange on 28/11/2016.
  */
@@ -17,13 +16,12 @@ export class ReservationDetailResolve implements Resolve<Flight> {
   constructor(private flightService: FlightService,
               private reservationService: ReservationService,
               private router: Router,
-              private toast: ToastyService,
-              private storeService: StoreService) {
+              private toast: ToastyService) {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
-    let id = route.params['id'];
-    const pwd = this.storeService.get('pwd');
+    const id = route.params['id'];
+    const pwd = route.params['pwd'];
 
     return Observable.forkJoin(
       this.reservationService.getOne(id, pwd),
@@ -41,4 +39,5 @@ export class ReservationDetailResolve implements Resolve<Flight> {
         return Observable.of(false);
       });
   }
+
 }

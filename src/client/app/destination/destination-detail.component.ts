@@ -42,9 +42,7 @@ export class DestinationDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.data.subscribe((data: {destination: Destination}) => {
-      this.selectedDestination = data.destination;
-    });
+    this.loadData();
   }
 
   saveDestination(destination: Destination) {
@@ -69,4 +67,9 @@ export class DestinationDetailComponent implements OnInit {
     this.router.navigate(['/client/destination']);
   }
 
+  private loadData() {
+    this.route.data.subscribe((data: {destination: Destination}) => {
+      this.selectedDestination = data.destination;
+    });
+  }
 }

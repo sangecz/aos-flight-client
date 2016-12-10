@@ -13,7 +13,7 @@ export class StoreService {
   }
 
   set(key: string, val: any) {
-    this.store[key] = JSON.stringify(val);
+    this.store[key] = val;
   }
 
   get(key: string): any {

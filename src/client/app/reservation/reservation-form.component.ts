@@ -6,6 +6,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 import { Constants } from '../shared/config/app.constants';
 import { reservationStates } from './reservation-states';
+import { AuthService } from '../shared/auth/auth.service';
 
 @Component({
   moduleId: module.id,
@@ -30,7 +31,8 @@ export class ReservationFormComponent implements OnInit {
   private submitTxt: string = '';
   private _flights: Flight[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private authService: AuthService) {
     this.createForm();
   }
 
@@ -115,7 +117,7 @@ export class ReservationFormComponent implements OnInit {
   }
 
   showDeleteBtn(): boolean {
-    if (!this.detail) {
+    if (!this.detail || (!this.authService.isAdmin && !this.authService.isManager)) {
       return false;
     }
     return this.reservationValue && this.reservationValue.state !== reservationStates.PAID;

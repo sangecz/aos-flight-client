@@ -6,7 +6,6 @@ import 'rxjs/add/observable/throw';
 import { Config } from '../config/env.config';
 import { reservationStates } from '../../reservation/reservation-states';
 import { Constants } from '../config/app.constants';
-import { FlightService } from '../flight/flight.service';
 import { HttpClientService } from '../http-client/http-client.service';
 
 const apiUrl = Config.API;
@@ -17,49 +16,21 @@ export class ReservationService {
 
   private headers: Headers;
 
-  constructor(private flightService: FlightService,
-              private httpClient: HttpClientService) {
+  constructor(private httpClient: HttpClientService) {
     this.headers = new Headers();
   }
 
   getAll(): Observable<any> {
-    return Observable.forkJoin(
-      this.httpClient.getAll(`${apiUrl}/${endpoint}`, null, true).map((res: Response) => res.json()),
-      this.flightService.getAll(null, null, null)
-      )
-      .map(res => {
-        let reservations: Reservation[] = res[0];
-        let flights: Flight[] = res[1][0];
-
-        reservations.forEach((r: Reservation) => {
-          flights.forEach((f: Flight) => {
-            if (r.flight === f.id) r.flightName = f.name;
-          });
-        });
-
-        return [reservations, flights];
-      });
+    return this.httpClient.getAll(`${apiUrl}/${endpoint}`, null, true)
+      .map((res: Response) => res.json());
   }
 
   getOne(id: number, password: string): Observable<Reservation> {
 
-    this.headers.append(Constants.headers.xPassword, password);
+    this.headers.set(Constants.headers.xPassword, password);
 
-    return Observable.forkJoin(
-      // FIXME auth = false, jen x-pwd
-      this.httpClient.getOne(`${apiUrl}/${endpoint}/${id}`, this.headers, true).map((res: Response) => res.json()),
-      this.flightService.getAll(null, null, null)
-      )
-      .map(res => {
-        let reservation: Reservation = res[0];
-        let flights: Flight[] = res[1][0];
-
-        flights.forEach((f: Flight) => {
-          if (reservation.flight === f.id) reservation.flightName = f.name;
-        });
-
-        return reservation;
-      });
+      return this.httpClient.getOne(`${apiUrl}/${endpoint}/${id}`, this.headers, false)
+        .map((res: Response) => res.json());
   }
 
   create(reservation: Reservation): Observable<Reservation> {
@@ -69,14 +40,14 @@ export class ReservationService {
       .map((res: Response) => res.json())
   }
 
-  update(reservation: Reservation, password: string): Observable<Response> {
+  update(reservation: Reservation): Observable<Response> {
     const id = reservation.id;
+    const pwd = reservation.password;
     this.deleteProperties(reservation);
     reservation.state = reservationStates.CANCELED;
 
-    this.headers.append(Constants.headers.xPassword, password);
-    // FIXME auth = false, jen x-pwd
-    return this.httpClient.update(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(reservation), this.headers, true);
+    this.headers.set(Constants.headers.xPassword, pwd);
+    return this.httpClient.update(`${apiUrl}/${endpoint}/${id}`, JSON.stringify(reservation), this.headers, false);
   }
 
   remove(id: number): Observable<Response> {
@@ -89,7 +60,6 @@ export class ReservationService {
 
   private deleteProperties(reservation: Reservation) {
     delete reservation.id;
-    delete reservation.url;
     delete reservation.created;
     delete reservation.password;
     delete reservation.flightName;

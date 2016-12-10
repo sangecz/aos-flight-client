@@ -4,6 +4,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
+import { AuthService } from '../shared/auth/auth.service';
+
 @Component({
   moduleId: module.id,
   selector: 'destination-form',
@@ -24,7 +26,8 @@ export class DestinationFormComponent {
   private destinationValue: Destination;
   private detail: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private authService: AuthService) {
     this.createForm();
   }
 

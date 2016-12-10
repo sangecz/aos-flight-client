@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
 
 import { ReservationService } from '../shared/reservation/reservation.service';
 import { AuthService } from '../shared/auth/auth.service';
 import { ToastUtils } from '../shared/util/util';
+import { BaseComponent } from '../shared/base.component';
 import { FlightService } from '../shared/flight/flight.service';
-import { StoreService } from '../shared/util/store.service';
 
 
 @Component({
@@ -22,10 +22,11 @@ import { StoreService } from '../shared/util/store.service';
     </reservation-form>
     
     <div [hidden]="!createdReservation">
-      <!-- TODO pouzit heslo pro vstup do rezervace -->
       <h5>Last created reservation:</h5>
-      <a href="#" routerLink="/client/reservation/{{createdReservation?.id}}">reservation link</a><br/>
-      <span> password: {{createdReservation?.password}}</span>
+      <span>reservation id: <b>{{createdReservation?.id}}</b></span><br/>
+      <span> password: <b>{{createdReservation?.password}}</b></span><br />
+      <span> reservation link: <b>{{getReservationLink(createdReservation)}}</b></span><br />
+      <button (click)="goToDetail(createdReservation.id, createdReservation.password)">Edit reservation</button>
     </div>
     
     <reservation-list
@@ -41,7 +42,7 @@ import { StoreService } from '../shared/util/store.service';
     }
   `]
 })
-export class ReservationComponent implements OnInit {
+export class ReservationComponent extends BaseComponent implements OnInit {
 
   flights: Flight[];
   createdReservation: Reservation;
@@ -52,28 +53,23 @@ export class ReservationComponent implements OnInit {
               private router: Router,
               public authService: AuthService,
               private toast: ToastyService,
-              private flightService: FlightService,
-              private storeService: StoreService) {
+              private route: ActivatedRoute,
+              private flightService: FlightService) {
+    super();
   }
 
   ngOnInit() {
-    this.getReservations();
-    this.getFlights();
-  }
-
-  getReservations() {
-    this.reservationService.getAll()
-      .subscribe(
-        (res: any) => this.reservations = <Reservation[]>res[0],
-        err => this.toast.error(ToastUtils.set(err))
-      );
+    super.ngOnInit();
+    this.loadData();
   }
 
   addReservation(reservation: Reservation) {
     this.reservationService.create(reservation)
       .subscribe(
         res => {
-          this.getReservations();
+          if (this.authService.isAdmin || this.authService.isManager) {
+            this.getReservations();
+          }
           this.createdReservation = res;
         },
         err => this.toast.error(ToastUtils.set(err))
@@ -81,17 +77,54 @@ export class ReservationComponent implements OnInit {
   }
 
   selectReservation(reservation: Reservation) {
-    this.storeService.set('pwd', reservation.password);
-    this.router.navigate(['/client/reservation', reservation.id]);
+    this.goToDetail(reservation.id, reservation.password);
   }
 
-  getFlights() {
-    this.flightService.getAll(null, null, null)
+  goToDetail(id: number, pwd: string) {
+    this.router.navigate(['/client/reservation', id, pwd]);
+  }
+
+  getReservationLink(reservation: Reservation) {
+    if (!reservation) return '';
+
+    return `${window.location.href}/${reservation.id}/${reservation.password}`;
+  }
+
+  private loadData() {
+    this.route.data.subscribe((data: {obj: {flights: Flight[], reservations: Reservation[]}}) => {
+      this.flights = data.obj.flights;
+
+      this.reservations = this.mapReservationsToFlights(data.obj.reservations);
+    });
+  }
+
+  private mapReservationsToFlights(reservations: Reservation[]) {
+    if (!reservations) return [];
+
+    reservations.forEach((r: Reservation) => {
+      this.flights.forEach((f: Flight) => {
+        if (r.flight === f.id) r.flightName = f.name;
+      });
+    });
+
+    return reservations;
+  }
+
+  private getReservations() {
+    this.reservationService.getAll()
       .subscribe(
-        res => {
-          this.flights = res[0];
+        (res: Reservation[]) => {
+
+          this.flightService.getAll(null, null, null)
+            .subscribe(
+              res2 => {
+                this.flights = res2[0];
+                this.reservations = this.mapReservationsToFlights(res);
+              },
+              err => this.toast.error(ToastUtils.set(err)))
         },
         err => this.toast.error(ToastUtils.set(err))
       );
   }
 }
+

@@ -6,6 +6,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Constants } from '../shared/config/app.constants';
 import { validateDateTime } from '../shared/forms/validator';
+import { AuthService } from '../shared/auth/auth.service';
 
 @Component({
   moduleId: module.id,
@@ -30,7 +31,8 @@ export class FlightFormComponent {
   private _destinations: Destination[];
   datetimePlaceholder = Constants.DATETIME_PLACEHOLDER;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private authService: AuthService) {
     this.createForm();
   }
 

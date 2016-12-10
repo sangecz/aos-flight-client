@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
 import { Constants } from '../config/app.constants';
-import { DestinationService } from '../destination/destination.service';
 import { Config } from '../config/env.config';
 import { Sort } from '../sort/sort';
 import { DepartureFilter } from '../filter/filter';
@@ -19,8 +18,7 @@ export class FlightService {
 
   headers: Headers;
 
-  constructor(private httpClient: HttpClientService,
-              private destinationService: DestinationService) {
+  constructor(private httpClient: HttpClientService) {
     this.headers = new Headers();
   }
 
@@ -32,29 +30,10 @@ export class FlightService {
     this.setFilterHeaders(filter);
     this.setPaginationHeaders(pagination);
 
-    let totalCount: number;
-
-    return Observable.forkJoin(
-      this.httpClient.getAll(`${apiUrl}/${endpoint}`, this.headers, false)
-        .map((res: Response) => {
-          totalCount = +res.headers.get(Constants.headers.xCount);
-          return res.json();
-        }),
-      this.destinationService.getAll(null)
-      )
-      .map(res => {
-        let flights: Flight[] = res[0];
-
-        let destinations: Destination[] = res[1];
-
-        flights.forEach((f: Flight) => {
-          destinations.forEach(d => {
-            if (f.from === d.id) f.fromName = d.name;
-            if (f.to === d.id) f.toName = d.name;
-          });
-        });
-
-        return [flights, totalCount];
+    return this.httpClient.getAll(`${apiUrl}/${endpoint}`, this.headers, false)
+      .map((res: Response) => {
+        const totalCount = +res.headers.get(Constants.headers.xCount);
+        return [res.json(), totalCount];
       });
   }
 

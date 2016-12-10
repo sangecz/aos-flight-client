@@ -45,10 +45,7 @@ export class FlightDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.data.subscribe((data: {obj: {flight: Flight, destinations: Destination[]}}) => {
-      this.selectedFlight = data.obj.flight;
-      this.destinations = data.obj.destinations;
-    });
+    this.loadData();
   }
 
   saveFlight(flight: Flight) {
@@ -73,4 +70,11 @@ export class FlightDetailComponent implements OnInit {
     this.router.navigate(['/client/flight']);
   }
 
+
+  private loadData() {
+    this.route.data.subscribe((data: {obj: {flight: Flight, destinations: Destination[]}}) => {
+      this.selectedFlight = data.obj.flight;
+      this.destinations = data.obj.destinations;
+    });
+  }
 }

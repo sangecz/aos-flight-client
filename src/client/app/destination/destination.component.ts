@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
 
@@ -8,11 +8,15 @@ import { Observable } from 'rxjs/Observable';
 import { DestinationState, DESTINATION_TAG } from '../shared/destination/destination.state';
 import { ToastUtils } from '../shared/util/util';
 import { AuthService } from '../shared/auth/auth.service';
+import { BaseComponent } from '../shared/base.component';
 
 const destinationSortFields = {
   name: 'name'
 };
 
+/**
+ * ngrx/store used on sort only
+ */
 @Component({
   moduleId: module.id,
   selector: 'sd-destination',
@@ -40,26 +44,27 @@ const destinationSortFields = {
     }
   `]
 })
-export class DestinationComponent implements OnInit {
-
+export class DestinationComponent extends BaseComponent implements OnInit, OnDestroy {
   destinations: Destination[];
+
   selectedDestination: Destination;
   state$: Observable<DestinationState>;
-
   constructor(public destinationService: DestinationService,
               private router: Router,
               private sortService: SortService,
               private toast: ToastyService,
               private authService: AuthService) {
+    super();
     this.state$ = <Observable<DestinationState>> sortService.registerSort(DESTINATION_TAG, destinationSortFields.name);
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.getDestinations();
   }
 
   getDestinations() {
-    this.state$.subscribe(
+    this.subscription = this.state$.subscribe(
       state => {
         this.destinationService.getAll(state.sort)
           .subscribe(
@@ -83,7 +88,6 @@ export class DestinationComponent implements OnInit {
 
   changeSort() {
     this.sortService.toggleSort(DESTINATION_TAG, destinationSortFields.name);
-    this.getDestinations();
   }
 
 }
