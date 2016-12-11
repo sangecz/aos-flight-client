@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
 
 import { DestinationService } from '../shared/index';
-import { SortService } from '../shared/sort/sort.service';
+import { SortService } from '../shared/forms/sort/sort.service';
 import { Observable } from 'rxjs/Observable';
 import { DestinationState, DESTINATION_TAG } from '../shared/destination/destination.state';
 import { ToastUtils } from '../shared/util/util';
@@ -66,7 +66,10 @@ export class DestinationComponent extends BaseComponent implements OnInit, OnDes
   getDestinations() {
     this.subscription = this.state$.subscribe(
       state => {
+        this.loadingService.startLoading();
+
         this.destinationService.getAll(state.sort)
+          .finally(this.loadingService.stopLoading.bind(this.loadingService))
           .subscribe(
             destinations => this.destinations = destinations,
             err => this.toast.error(ToastUtils.set(err))
@@ -75,7 +78,10 @@ export class DestinationComponent extends BaseComponent implements OnInit, OnDes
   }
 
   addDestination(destination: Destination) {
+    this.loadingService.startLoading();
+
     this.destinationService.create(destination)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
       .subscribe(
         res => this.getDestinations(),
         err => this.toast.error(ToastUtils.set(err))

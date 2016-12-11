@@ -5,9 +5,9 @@ import 'rxjs/add/observable/throw';
 
 import { Constants } from '../config/app.constants';
 import { Config } from '../config/env.config';
-import { Sort } from '../sort/sort';
-import { DepartureFilter } from '../filter/filter';
-import { Pagination } from '../pagination/pagination';
+import { Sort } from '../forms/sort/sort';
+import { DepartureFilter } from '../forms/filter/filter';
+import { Pagination } from '../forms/pagination/pagination';
 import { HttpClientService } from '../http-client/http-client.service';
 
 const apiUrl = Config.API;
@@ -55,7 +55,7 @@ export class FlightService {
   }
 
   remove(id: number): Observable<Response> {
-    return this.httpClient.remove(`${apiUrl}/${endpoint}/${id}`, true)
+    return this.httpClient.remove(`${apiUrl}/${endpoint}/${id}`, true);
   }
 
   private setPaginationHeaders(pagination: Pagination) {

@@ -5,10 +5,10 @@
 import { Injectable } from '@angular/core';
 
 import { Store, Action } from '@ngrx/store';
-import * as destination from '../destination/destination.actions';
-import * as flight from '../flight/flight.actions';
-import { State } from '../../app.state';
-import { DESTINATION_TAG } from '../destination/destination.state';
+import * as destination from '../../destination/destination.actions';
+import * as flight from '../../flight/flight.actions';
+import { State } from '../../../app.state';
+import { DESTINATION_TAG } from '../../destination/destination.state';
 
 @Injectable()
 export class SortService {

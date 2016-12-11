@@ -36,6 +36,10 @@ export class FlightFormComponent {
     this.createForm();
   }
 
+  @Output() onFlightChange = new EventEmitter<Flight>();
+  @Output() onBack = new EventEmitter<void>();
+  @Output() onRemove = new EventEmitter<number>();
+
   @Input()
   set isDetail(val: boolean) {
     this.detail = val;
@@ -67,10 +71,6 @@ export class FlightFormComponent {
       }
     }
   }
-
-  @Output() onFlightChange = new EventEmitter<Flight>();
-  @Output() onBack = new EventEmitter<void>();
-  @Output() onRemove = new EventEmitter<number>();
 
   onSubmit() {
     if (this.flightFG.valid) {

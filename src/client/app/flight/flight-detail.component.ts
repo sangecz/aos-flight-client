@@ -2,18 +2,18 @@
  * Created by sange on 23/10/2016.
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
 
 import { ToastUtils } from '../shared/util/util';
 import { FlightService } from '../shared/flight/flight.service';
-import { DestinationService } from '../shared/destination/destination.service';
+import { BaseComponent } from '../shared/base.component';
 
 @Component({
   moduleId: module.id,
   selector: 'flight-detail',
   template: `
-    <h2>Edit flight</h2>
+    <h2>Flight detail</h2>
 
     <flight-form
       [destinations]="destinations"
@@ -33,7 +33,7 @@ import { DestinationService } from '../shared/destination/destination.service';
     }
   `]
 })
-export class FlightDetailComponent implements OnInit {
+export class FlightDetailComponent extends BaseComponent implements OnInit {
 
   destinations: Destination[];
   selectedFlight: Flight;
@@ -42,15 +42,20 @@ export class FlightDetailComponent implements OnInit {
               public route: ActivatedRoute,
               public router: Router,
               private toast: ToastyService) {
+    super();
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.loadData();
   }
 
   saveFlight(flight: Flight) {
     if (flight) {
+      this.loadingService.startLoading();
+
       this.flightService.update(flight)
+        .finally(this.loadingService.stopLoading.bind(this.loadingService))
         .subscribe(
           () => this.back(),
           err => this.toast.error(ToastUtils.set(err))
@@ -59,10 +64,16 @@ export class FlightDetailComponent implements OnInit {
   }
 
   removeFlight(id: number) {
+    this.loadingService.startLoading();
+
     this.flightService.remove(id)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
       .subscribe(
-        () => this.back(),
-        err => this.toast.error(ToastUtils.set(err))
+        res => {
+          ;
+        },
+        err => this.toast.error(ToastUtils.set(err)),
+        () => this.back()
       );
   }
 
@@ -72,9 +83,13 @@ export class FlightDetailComponent implements OnInit {
 
 
   private loadData() {
-    this.route.data.subscribe((data: {obj: {flight: Flight, destinations: Destination[]}}) => {
-      this.selectedFlight = data.obj.flight;
-      this.destinations = data.obj.destinations;
-    });
+    this.loadingService.startLoading();
+
+    this.route.data
+      .subscribe((data: {obj: {flight: Flight, destinations: Destination[]}}) => {
+        this.selectedFlight = data.obj.flight;
+        this.destinations = data.obj.destinations;
+        this.loadingService.stopLoading();
+      });
   }
 }

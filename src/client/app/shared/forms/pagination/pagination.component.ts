@@ -9,22 +9,22 @@ const initPagination: Pagination = {base: 10, offset: 0};
 
 @Component({
   moduleId: module.id,
-  selector: 'pagination',
+  selector: 'aos-pagination',
   templateUrl: 'pagination.component.html',
   styleUrls: ['pagination.component.css']
 })
 export class PaginationComponent {
 
+  bases = [5, 10, 20, 50, 100];
   private pagination: Pagination = initPagination;
   private _recordCount: number = 0;
-  bases = [5, 10, 20, 50, 100];
+
+  @Output() onPaginationChange = new EventEmitter<Pagination>();
 
   @Input()
   set recordCount(cnt: number) {
     this._recordCount = cnt;
   }
-
-  @Output() onPaginationChange = new EventEmitter<Pagination>();
 
   paginationBaseChanged(base: number) {
     this.pagination.base = base;

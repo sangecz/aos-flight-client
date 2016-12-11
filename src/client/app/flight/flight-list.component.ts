@@ -20,14 +20,18 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
       <tr *ngFor="let flight of flights" (click)="onFlightSelected.emit(flight)">
         <td>{{flight.name}}</td>
         <td>{{flight.dateOfDeparture | date:'yyyy-MM-ddTHH:mm:ss Z'}}</td>
-        <td>{{flight.distance}}</td>
-        <td>{{flight.seats}}</td>
-        <td>{{flight.price}}</td>
+        <td>{{flight.distance}} km</td>
+        <td class="center">{{flight.seats}}</td>
+        <td>{{flight.price}} Kč</td>
         <td>{{flight.fromName}}</td>
         <td>{{flight.toName}}</td>
       </tr>
     </table>
   `,
+  styles: [` 
+    td, th { padding: 4px 8px; } 
+    .center { text-align: center; } 
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FlightListComponent {

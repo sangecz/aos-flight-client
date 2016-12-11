@@ -7,7 +7,6 @@ div {
   padding: 0;
 }
 
-
 /* Box-sizing border-box */
 * {
   box-sizing: border-box;
@@ -78,7 +77,6 @@ input:disabled {
   background-color: #e1e1e1 !important;
 }
 
-
 /* lists */
 
 .asc:after {
@@ -104,6 +102,3 @@ table.list tr:not(:first-child):hover {
 table.list tr:nth-child(odd) {
   background-color: #efefef;
 }
-
-
-

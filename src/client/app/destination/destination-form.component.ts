@@ -31,6 +31,10 @@ export class DestinationFormComponent {
     this.createForm();
   }
 
+  @Output() onDestinationChange = new EventEmitter<Destination>();
+  @Output() onBack = new EventEmitter<void>();
+  @Output() onRemove = new EventEmitter<number>();
+
   @Input()
   set isDetail(val: boolean) {
     this.detail = val;
@@ -47,10 +51,6 @@ export class DestinationFormComponent {
       });
     }
   }
-
-  @Output() onDestinationChange = new EventEmitter<Destination>();
-  @Output() onBack = new EventEmitter<void>();
-  @Output() onRemove = new EventEmitter<number>();
 
   onSubmit() {
     if (this.destinationFG.valid) {

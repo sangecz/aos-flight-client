@@ -2,7 +2,7 @@
  * Created by sange on 04/12/2016.
  */
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { UserType } from './user-type';
 
 @Component({
@@ -22,15 +22,16 @@ import { UserType } from './user-type';
       padding: 2px 2px;
       margin: 0;
       outline: none;
+      font-weight: bolder;
     }
     .switch-disabled {
       background-color: #8f8f8f;
     }
      .switch-disabled:hover {
-      background-color: #0099ff;
+      background-color: #5bc0de;
     }
     .switch-selected {
-      background-color: #0099ff;
+      background-color: #5bc0de;
     }
     .left {
       border-top-left-radius: 5px;
@@ -42,25 +43,17 @@ import { UserType } from './user-type';
     }
   `]
 })
-export class UserSwitchComponent implements OnInit {
+export class UserSwitchComponent {
 
   @Input() select: UserType;
   @Output() onSelectedUser = new EventEmitter<UserType>();
-
-  constructor() {
-  }
-
-  ngOnInit() {
-
-  }
 
   switchTo(userType: UserType) {
     this.select = userType;
     this.onSelectedUser.emit(userType);
   }
 
-  getClass(userType: UserType){
+  getClass(userType: UserType) {
     return userType === this.select ? 'switch-selected' : 'switch-disabled';
   }
-
 }

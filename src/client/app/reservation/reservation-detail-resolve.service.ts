@@ -39,5 +39,4 @@ export class ReservationDetailResolve implements Resolve<Flight> {
         return Observable.of(false);
       });
   }
-
 }

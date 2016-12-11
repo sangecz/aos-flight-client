@@ -2,19 +2,24 @@
  * Created by sange on 23/10/2016.
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
 
 import { ReservationService } from '../shared/reservation/reservation.service';
 import { reservationStates } from './reservation-states';
 import { ToastUtils } from '../shared/util/util';
-import { FlightService } from '../shared/flight/flight.service';
+import { BaseComponent } from '../shared/base.component';
 
 @Component({
   moduleId: module.id,
   selector: 'reservation-detail',
   template: `
-    <h2>Cancel reservation</h2>
+    <h2>Reservation detail</h2>
+    
+    <print-btn 
+      *ngIf="showPrintBtn()" 
+      (onPrintClicked)="eTicket(selectedReservation)">  
+    </print-btn>
     
     <reservation-form
       [reservation]="selectedReservation"
@@ -26,6 +31,7 @@ import { FlightService } from '../shared/flight/flight.service';
     </reservation-form>
     
     <button type="button" *ngIf="showPayBtn()" (click)="payForReservation()">Pay</button>
+    
   `,
   styles: [`
     :host {
@@ -34,7 +40,7 @@ import { FlightService } from '../shared/flight/flight.service';
     }
   `]
 })
-export class ReservationDetailComponent implements OnInit {
+export class ReservationDetailComponent extends BaseComponent implements OnInit {
 
   flights: Flight[];
   selectedReservation: Reservation;
@@ -43,15 +49,20 @@ export class ReservationDetailComponent implements OnInit {
               public route: ActivatedRoute,
               public router: Router,
               private toast: ToastyService) {
+    super();
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.loadData();
   }
 
   saveReservation(reservation: Reservation) {
+    this.loadingService.startLoading();
+
     if (reservation) {
       this.reservationService.update(reservation)
+        .finally(this.loadingService.stopLoading.bind(this.loadingService))
         .subscribe(
           () => this.back(),
           err => this.toast.error(ToastUtils.set(err))
@@ -60,7 +71,10 @@ export class ReservationDetailComponent implements OnInit {
   }
 
   removeReservation(id: number) {
+    this.loadingService.startLoading();
+
     this.reservationService.remove(id)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
       .subscribe(
         () => this.back(),
         err => this.toast.error(ToastUtils.set(err))
@@ -68,9 +82,31 @@ export class ReservationDetailComponent implements OnInit {
   }
 
   payForReservation() {
+    this.loadingService.startLoading();
+
     this.reservationService.pay(this.selectedReservation.id)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
       .subscribe(
         () => this.back(),
+        err => this.toast.error(ToastUtils.set(err))
+      );
+  }
+
+  eTicket(reservation: Reservation) {
+    this.loadingService.startLoading();
+
+    this.reservationService.downloadTicket(reservation.id, reservation.password)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
+      .subscribe(
+        res => {
+          let a = document.createElement('a');
+          a.href = 'data:attachment/text,' + encodeURIComponent(res);
+          a.target = '_blank';
+          a.download = `reservation_${reservation.id}.txt`;
+
+          document.body.appendChild(a);
+          a.click();
+        },
         err => this.toast.error(ToastUtils.set(err))
       );
   }
@@ -83,11 +119,19 @@ export class ReservationDetailComponent implements OnInit {
     return this.selectedReservation && this.selectedReservation.state === reservationStates.NEW;
   }
 
+  showPrintBtn(): boolean {
+    return this.selectedReservation && this.selectedReservation.state === reservationStates.PAID;
+  }
+
   private loadData() {
-    this.route.data.subscribe((data: {obj: {flights: Flight[], reservation: Reservation}}) => {
-      this.flights = data.obj.flights;
-      this.selectedReservation = data.obj.reservation;
-    });
+    this.loadingService.startLoading();
+
+    this.route.data
+      .subscribe((data: {obj: {flights: Flight[], reservation: Reservation}}) => {
+        this.flights = data.obj.flights;
+        this.selectedReservation = data.obj.reservation;
+        this.loadingService.stopLoading();
+      });
   }
 
 }

@@ -2,17 +2,18 @@
  * Created by sange on 23/10/2016.
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
 
 import { DestinationService } from '../shared/destination/destination.service';
 import { ToastUtils } from '../shared/util/util';
+import { BaseComponent } from '../shared/base.component';
 
 @Component({
   moduleId: module.id,
   selector: 'destination-detail',
   template: `
-    <h2>Edit destination</h2>
+    <h2>Destination detail</h2>
 
     <destination-form
       [destination]="selectedDestination"
@@ -31,7 +32,7 @@ import { ToastUtils } from '../shared/util/util';
     }
   `]
 })
-export class DestinationDetailComponent implements OnInit {
+export class DestinationDetailComponent extends BaseComponent implements OnInit {
 
   selectedDestination: Destination;
 
@@ -39,15 +40,20 @@ export class DestinationDetailComponent implements OnInit {
               public route: ActivatedRoute,
               public router: Router,
               private toast: ToastyService) {
+    super();
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.loadData();
   }
 
   saveDestination(destination: Destination) {
+    this.loadingService.startLoading();
+
     if (destination) {
       this.destinationService.update(destination)
+        .finally(this.loadingService.stopLoading.bind(this.loadingService))
         .subscribe(
           res => this.back(),
           err => this.toast.error(ToastUtils.set(err))
@@ -56,7 +62,10 @@ export class DestinationDetailComponent implements OnInit {
   }
 
   removeDestination(id: number) {
+    this.loadingService.startLoading();
+
     this.destinationService.remove(id)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
       .subscribe(
         res => this.back(),
         err => this.toast.error(ToastUtils.set(err))
@@ -68,8 +77,12 @@ export class DestinationDetailComponent implements OnInit {
   }
 
   private loadData() {
-    this.route.data.subscribe((data: {destination: Destination}) => {
-      this.selectedDestination = data.destination;
-    });
+    this.loadingService.startLoading();
+
+    this.route.data
+      .subscribe((data: {destination: Destination}) => {
+        this.selectedDestination = data.destination;
+        this.loadingService.stopLoading();
+      });
   }
 }

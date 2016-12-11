@@ -32,7 +32,8 @@ import { FlightService } from '../shared/flight/flight.service';
     <reservation-list
       [visible]="authService.isAdmin || authService.isManager"
       [reservations]="reservations"
-      (onReservationSelected)="selectReservation($event)">
+      (onReservationSelected)="selectReservation($event)"
+      (onDownloadTicket)="eTicket($event)">
     </reservation-list>
   `,
   styles: [`
@@ -64,7 +65,10 @@ export class ReservationComponent extends BaseComponent implements OnInit {
   }
 
   addReservation(reservation: Reservation) {
+    this.loadingService.startLoading();
+
     this.reservationService.create(reservation)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
       .subscribe(
         res => {
           if (this.authService.isAdmin || this.authService.isManager) {
@@ -84,6 +88,25 @@ export class ReservationComponent extends BaseComponent implements OnInit {
     this.router.navigate(['/client/reservation', id, pwd]);
   }
 
+  eTicket(reservation: Reservation) {
+    this.loadingService.startLoading();
+
+    this.reservationService.downloadTicket(reservation.id, reservation.password)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
+      .subscribe(
+        res => {
+          let a = document.createElement('a');
+          a.href = 'data:attachment/text,' + encodeURIComponent(res);
+          a.target = '_blank';
+          a.download = `reservation_${reservation.id}.txt`;
+
+          document.body.appendChild(a);
+          a.click();
+        },
+        err => this.toast.error(ToastUtils.set(err))
+      );
+  }
+
   getReservationLink(reservation: Reservation) {
     if (!reservation) return '';
 
@@ -91,11 +114,14 @@ export class ReservationComponent extends BaseComponent implements OnInit {
   }
 
   private loadData() {
-    this.route.data.subscribe((data: {obj: {flights: Flight[], reservations: Reservation[]}}) => {
-      this.flights = data.obj.flights;
+    this.loadingService.startLoading();
 
-      this.reservations = this.mapReservationsToFlights(data.obj.reservations);
-    });
+    this.route.data
+      .subscribe((data: {obj: {flights: Flight[], reservations: Reservation[]}}) => {
+        this.flights = data.obj.flights;
+        this.reservations = this.mapReservationsToFlights(data.obj.reservations);
+        this.loadingService.stopLoading();
+      });
   }
 
   private mapReservationsToFlights(reservations: Reservation[]) {
@@ -111,17 +137,24 @@ export class ReservationComponent extends BaseComponent implements OnInit {
   }
 
   private getReservations() {
+    this.loadingService.startLoading();
+
     this.reservationService.getAll()
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
       .subscribe(
         (res: Reservation[]) => {
 
+          this.loadingService.startLoading();
+
           this.flightService.getAll(null, null, null)
+            .finally(this.loadingService.stopLoading.bind(this.loadingService))
             .subscribe(
               res2 => {
                 this.flights = res2[0];
                 this.reservations = this.mapReservationsToFlights(res);
               },
-              err => this.toast.error(ToastUtils.set(err)))
+              err => this.toast.error(ToastUtils.set(err))
+            );
         },
         err => this.toast.error(ToastUtils.set(err))
       );

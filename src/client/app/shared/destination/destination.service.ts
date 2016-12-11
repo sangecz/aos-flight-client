@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
 import { Constants } from '../config/app.constants';
-import { Sort } from '../sort/sort';
+import { Sort } from '../forms/sort/sort';
 import { Config } from '../config/env.config';
 import { HttpClientService } from '../http-client/http-client.service';
 

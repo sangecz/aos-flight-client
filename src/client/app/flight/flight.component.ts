@@ -4,9 +4,9 @@ import { Observable } from 'rxjs/Observable';
 import { ToastyService } from 'ng2-toasty';
 
 import { FlightService } from '../shared/flight/flight.service';
-import { SortService } from '../shared/sort/sort.service';
-import { DepartureFilter } from '../shared/filter/filter';
-import { Pagination } from '../shared/pagination/pagination';
+import { SortService } from '../shared/forms/sort/sort.service';
+import { DepartureFilter } from '../shared/forms/filter/filter';
+import { Pagination } from '../shared/forms/pagination/pagination';
 import { FlightState, FLIGHT_TAG } from '../shared/flight/flight.state';
 import { ToastUtils } from '../shared/util/util';
 import { AuthService } from '../shared/auth/auth.service';
@@ -62,7 +62,10 @@ export class FlightComponent extends BaseComponent implements OnInit {
   }
 
   addFlight(flight: Flight) {
+    this.loadingService.startLoading();
+
     this.flightService.create(flight)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
       .subscribe(
         res => this.getFlights(),
         err => this.toast.error(ToastUtils.set(err))
@@ -106,7 +109,10 @@ export class FlightComponent extends BaseComponent implements OnInit {
   private getFlights() {
     this.subscription = this.state$.subscribe(
       state => {
+        this.loadingService.startLoading();
+
         this.flightService.getAll(state.sort, this.filter, this.pagination)
+          .finally(this.loadingService.stopLoading.bind(this.loadingService))
           .subscribe(
             (res) => {
               this.flights = res[0];
@@ -129,6 +135,8 @@ export class FlightComponent extends BaseComponent implements OnInit {
   }
 
   private loadData() {
+    this.loadingService.startLoading();
+
     this.route.data.subscribe((data: {destinations: Destination[]}) => {
       this.destinations = data.destinations;
 

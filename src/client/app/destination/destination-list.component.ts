@@ -16,11 +16,15 @@ import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from 
                 </tr>
                 <tr *ngFor="let destination of destinations" (click)="onDestinationSelected.emit(destination)">
                   <td>{{destination.name}}</td>
-                  <td>{{destination.lat}}</td>
-                  <td>{{destination.lon}}</td>
+                  <td class="center">{{destination.lat}}</td>
+                  <td class="center">{{destination.lon}}</td>
                 </tr>
               </table>
   `,
+  styles: [` 
+    td, th { padding: 4px 8px; } 
+    .center { text-align: center; } 
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DestinationListComponent {

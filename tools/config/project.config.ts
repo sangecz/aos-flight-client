@@ -13,6 +13,7 @@ export class ProjectConfig extends SeedConfig {
   constructor() {
     super();
     this.APP_TITLE = 'AOS-FLIGHT';
+    this.ENABLE_SCSS = true;
 
     this.mergeObject(this.SYSTEM_CONFIG_DEV['paths'], {
       'immutable': 'node_modules/immutable/dist/immutable.js',

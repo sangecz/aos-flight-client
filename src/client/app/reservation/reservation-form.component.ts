@@ -36,6 +36,10 @@ export class ReservationFormComponent implements OnInit {
     this.createForm();
   }
 
+  @Output() onReservationChange = new EventEmitter<Reservation>();
+  @Output() onBack = new EventEmitter<void>();
+  @Output() onRemove = new EventEmitter<number>();
+
   @Input()
   set isDetail(val: boolean) {
     this.detail = val;
@@ -67,10 +71,6 @@ export class ReservationFormComponent implements OnInit {
       }
     }
   }
-
-  @Output() onReservationChange = new EventEmitter<Reservation>();
-  @Output() onBack = new EventEmitter<void>();
-  @Output() onRemove = new EventEmitter<number>();
 
   ngOnInit(): void {
     if (this.detail) {

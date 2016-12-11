@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Config } from './shared/index';
 import './operators';
+import { LoadingService } from './shared/loading/loading.service';
 
 /**
  * This class represents the main application component. Within the @Routes annotation is the configuration of the
@@ -14,18 +15,18 @@ import './operators';
     <sd-toolbar></sd-toolbar>
     <sd-navbar></sd-navbar>
 
+    <aos-loading *ngIf="loadingService.active$ | async"></aos-loading>
+
     <router-outlet></router-outlet>
     
     <ng2-toasty></ng2-toasty>
+    
   `
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  ngOnInit(): void {
-  }
-
-  constructor() {
+  constructor(private loadingService: LoadingService) {
     console.log('Environment config', Config);
   }
 }

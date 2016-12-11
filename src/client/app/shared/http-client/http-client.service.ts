@@ -7,6 +7,7 @@ import { Http, RequestOptions, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthService } from '../auth/auth.service';
+import { Constants } from '../config/app.constants';
 
 @Injectable()
 export class HttpClientService {
@@ -58,6 +59,19 @@ export class HttpClientService {
       .catch(this.handleError);
   }
 
+  soapPost(url: string, body: string, pwd: string) {
+    let opts = new RequestOptions();
+    let headers = new Headers();
+    headers.set('Content-Type', 'application/soap+xml');
+    headers.set(Constants.headers.xPassword, pwd);
+    opts.headers = headers;
+
+    return this.http.post(url, body, opts)
+      .share()
+      .map(res => res.text())
+      .catch(this.handleError);
+  }
+
   private createHeaders(auth: boolean, additionalHeaders?: Headers) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
@@ -69,7 +83,7 @@ export class HttpClientService {
       });
     }
 
-    if(auth) {
+    if (auth) {
       headers.set('Authorization', 'Basic ' + btoa(`${this.authService.username}:${this.authService.password}`));
     } else {
       headers.delete('Authorization');
@@ -82,5 +96,4 @@ export class HttpClientService {
     let errMsg = (error.message) ? error.message : error.status;
     return Observable.throw('Error: ' + errMsg);
   }
-
 }

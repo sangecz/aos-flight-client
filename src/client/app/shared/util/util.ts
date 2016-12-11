@@ -6,7 +6,7 @@ import { ToastOptions } from 'ng2-toasty';
 export class Util {
 
   static getISODatetimeString(datetime: string): string {
-    if(!datetime) {
+    if (!datetime) {
       return '';
     }
 
@@ -16,7 +16,7 @@ export class Util {
     const tzSign = tzOffset > 0 ? '+' : '-';
     const tz = ('0' + tzOffset).slice(-2);
 
-    return  `${dateWoutTZ}${tzSign}${tz}:00`;
+    return `${dateWoutTZ}${tzSign}${tz}:00`;
   }
 }
 
@@ -32,11 +32,9 @@ export class ToastUtils {
 
   static set(...content: string[]): ToastOptions {
     // ToastConfig ocekava minimalne msg a title
-    const title = content.length == 2 ? content[1] : '';
+    const title = content.length === 2 ? content[1] : '';
     let opts: ToastOptions = {msg: content[0], title};
     Object.assign(opts, toastOpts);
     return opts;
   }
-
-
 }

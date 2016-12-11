@@ -3,7 +3,7 @@
  */
 import { Component, Output, EventEmitter } from '@angular/core';
 
-import { DepartureFilter } from '../shared/filter/filter';
+import { DepartureFilter } from '../shared/forms/filter/filter';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { validateDateTime } from '../shared/forms/validator';
 import { Constants } from '../shared/config/app.constants';

@@ -1,4 +1,4 @@
-import { Sort } from '../sort/sort';
+import { Sort } from '../forms/sort/sort';
 /**
  * Created by sange on 27/11/2016.
  */
