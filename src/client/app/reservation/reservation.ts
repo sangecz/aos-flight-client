@@ -10,4 +10,5 @@ interface Reservation {
   state: any;
   created: Date;
   url: string;
+  email?: string;
 }

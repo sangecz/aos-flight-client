@@ -31,6 +31,10 @@ import { reservationStates } from './reservation-states';
               [hidden]="reservation.state !== paidState"
               (onPrintClicked)="downloadTicket(reservation)">
             </print-btn>
+            <email-btn
+              [hidden]="reservation.state !== paidState"
+              (onSendToEmailClicked)="emailTicket(reservation, $event)">
+            </email-btn>
           </td>
         </tr>
       </table>
@@ -50,10 +54,18 @@ export class ReservationListComponent {
   @Input() reservations: Reservation[];
   @Output() onReservationSelected = new EventEmitter<Reservation>();
   @Output() onDownloadTicket = new EventEmitter<Reservation>();
+  @Output() onEmailTicket = new EventEmitter<Reservation>();
 
   downloadTicket(reservation: Reservation) {
     if(reservation.state === this.paidState) {
       this.onDownloadTicket.emit(reservation);
+    }
+  }
+
+  emailTicket(reservation: Reservation, email: string) {
+    if(reservation.state === this.paidState) {
+      reservation.email = email;
+      this.onEmailTicket.emit(reservation);
     }
   }
 

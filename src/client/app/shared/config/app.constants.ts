@@ -3,6 +3,8 @@
  */
 export const Constants = {
 
+  wsUrl: 'ws://localhost:8080/clients',
+
   users: {
     admin: {
       username: 'admin',

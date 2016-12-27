@@ -20,6 +20,10 @@ import { BaseComponent } from '../shared/base.component';
       *ngIf="showPrintBtn()" 
       (onPrintClicked)="eTicket(selectedReservation)">  
     </print-btn>
+     <email-btn 
+      *ngIf="showPrintBtn()" 
+      (onSendToEmailClicked)="emailTicket(selectedReservation, $event)">  
+    </email-btn>
     
     <reservation-form
       [reservation]="selectedReservation"
@@ -106,8 +110,29 @@ export class ReservationDetailComponent extends BaseComponent implements OnInit 
 
           document.body.appendChild(a);
           a.click();
+          this.loadingService.stopLoading();
         },
-        err => this.toast.error(ToastUtils.set(err))
+        err => {
+          this.loadingService.stopLoading();
+          this.toast.error(ToastUtils.set(err));
+        }
+      );
+  }
+
+  emailTicket(reservation: Reservation, email: string) {
+    reservation.email = email;
+    this.loadingService.startLoading();
+
+    this.reservationService.sendToEmailTicket(reservation.id, reservation.password, reservation.email)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
+      .subscribe(
+        res => {
+          this.loadingService.stopLoading();
+        },
+        err => {
+          this.loadingService.stopLoading();
+          this.toast.error(ToastUtils.set(err));
+        }
       );
   }
 

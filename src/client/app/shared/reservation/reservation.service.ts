@@ -10,7 +10,8 @@ import { HttpClientService } from '../http-client/http-client.service';
 
 const apiUrl = Config.API;
 const endpoint = 'reservation';
-const endpointSoap = 'ws/downloadTicket';
+const endpointSoapDownloadTicket = 'ws/downloadTicket';
+const endpointSoapEmailTicket = 'ws/sendTicketToEmail';
 
 @Injectable()
 export class ReservationService {
@@ -60,15 +61,24 @@ export class ReservationService {
   }
 
   downloadTicket(id: number, password: string) {
-    const body = this.getSoapBody(id);
-    return this.httpClient.soapPost(`${apiUrl}/${endpointSoap}`, body, password)
+    const body = this.getBodyDownloadTicket(id);
+    return this.httpClient.soapPost(`${apiUrl}/${endpointSoapDownloadTicket}`, body, password)
       .map(res => {
         const txt = res.split('\n'); // parses soap resp.
         return txt[txt.length - 2];  // second line from the end contains eticket
       });
   }
 
-  private getSoapBody(id: number) {
+  sendToEmailTicket(id: number, password: string, email: string) {
+    const body = this.getBodyEmailTicket(id, email);
+    return this.httpClient.soapPost(`${apiUrl}/${endpointSoapEmailTicket}`, body, password)
+      .map(res => {
+        const txt = res.split('\n'); // parses soap resp.
+        return txt[txt.length - 2];  // second line from the end contains eticket
+      });
+  }
+
+  private getBodyDownloadTicket(id: number) {
     return `
       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.web.airline.aos.cvut.cz/">
        <soapenv:Header/>
@@ -76,6 +86,20 @@ export class ReservationService {
           <ws:downloadTicket>
              <reservationId>${id}</reservationId>
           </ws:downloadTicket>
+       </soapenv:Body>
+      </soapenv:Envelope>
+    `;
+  }
+
+  private getBodyEmailTicket(id: number, email: string) {
+    return `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.web.airline.aos.cvut.cz/">
+       <soapenv:Header/>
+       <soapenv:Body>
+          <ws:sendTicketToEmail>
+             <reservationId>${id}</reservationId>
+             <emailAddress>${email}</emailAddress>
+          </ws:sendTicketToEmail>
        </soapenv:Body>
       </soapenv:Envelope>
     `;

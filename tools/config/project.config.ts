@@ -22,7 +22,7 @@ export class ProjectConfig extends SeedConfig {
       '@ngrx/core': 'node_modules/@ngrx/core/bundles/core.min.umd.js',
       '@ngrx/store': 'node_modules/@ngrx/store/bundles/store.min.umd.js',
       '@ngrx/store-devtools': 'node_modules/@ngrx/store-devtools/bundles/store-devtools.min.umd.js',
-      // 'traceur': 'node_modules/traceur/dist/'
+      'ng2-toasty': 'node_modules/ng2-toasty/index.js'
     });
 
     this.SYSTEM_BUILDER_CONFIG.packageConfigPaths = [
@@ -50,12 +50,7 @@ export class ProjectConfig extends SeedConfig {
 
     /* Add to or override NPM module configurations: */
     // this.mergeObject(this.PLUGIN_CONFIGS['browser-sync'], { ghostMode: false });
-
-
-    this.mergeObject(this.SYSTEM_CONFIG_DEV['paths'], {
-      'ng2-toasty': 'node_modules/ng2-toasty/index.js'
-    });
-
+    
     this.mergeObject(this.SYSTEM_BUILDER_CONFIG['packages'], {
       'ng2-toasty': {
         main: './index.js',

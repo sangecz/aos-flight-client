@@ -19,6 +19,8 @@ import { PasswordComponent } from './forms/password.component';
 import { PrintButtonComponent } from './forms/print-btn.component';
 import { LoadingComponent } from './loading/loading.component';
 import { LoadingService } from './loading/loading.service';
+import { WebSocketService } from './websockets/websocket.service';
+import { EmailButtonComponent } from './forms/email-btn.component';
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
@@ -35,6 +37,7 @@ import { LoadingService } from './loading/loading.service';
     LoadingComponent,
     PasswordComponent,
     PrintButtonComponent,
+    EmailButtonComponent,
     UserSwitchComponent,
     ToolbarComponent,
     NavbarComponent,
@@ -44,6 +47,7 @@ import { LoadingService } from './loading/loading.service';
     LoadingComponent,
     PasswordComponent,
     PrintButtonComponent,
+    EmailButtonComponent,
     UserSwitchComponent,
     ToolbarComponent,
     NavbarComponent,
@@ -59,6 +63,7 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        WebSocketService,
         LoadingService,
         DestinationService,
         ReservationService,

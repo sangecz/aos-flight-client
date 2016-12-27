@@ -33,7 +33,8 @@ import { FlightService } from '../shared/flight/flight.service';
       [visible]="authService.isAdmin || authService.isManager"
       [reservations]="reservations"
       (onReservationSelected)="selectReservation($event)"
-      (onDownloadTicket)="eTicket($event)">
+      (onDownloadTicket)="eTicket($event)"
+      (onEmailTicket)="sendToEmail($event)">
     </reservation-list>
   `,
   styles: [`
@@ -102,8 +103,25 @@ export class ReservationComponent extends BaseComponent implements OnInit {
 
           document.body.appendChild(a);
           a.click();
+          this.loadingService.stopLoading();
         },
         err => this.toast.error(ToastUtils.set(err))
+      );
+  }
+
+  sendToEmail(reservation: Reservation) {
+    this.loadingService.startLoading();
+
+    this.reservationService.sendToEmailTicket(reservation.id, reservation.password, reservation.email)
+      .finally(this.loadingService.stopLoading.bind(this.loadingService))
+      .subscribe(
+        res => {
+          this.loadingService.stopLoading();
+        },
+        err => {
+          this.toast.error(ToastUtils.set(err));
+          this.loadingService.stopLoading();
+        }
       );
   }
 
