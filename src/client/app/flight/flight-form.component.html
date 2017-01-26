@@ -1,0 +1,86 @@
+<form novalidate (ngSubmit)="onSubmit()" [formGroup]="flightFG">
+
+  <table>
+
+    <tr>
+      <td>
+        <label>
+          <span>Name</span>
+          <input type="text" formControlName="name">
+        </label>
+        <div class="error" *ngIf="flightFG.get('name').hasError('required') && flightFG.get('name').touched">
+          Name is required
+        </div>
+        <div class="error" *ngIf="flightFG.get('name').hasError('minlength') && flightFG.get('name').touched">
+          Minimum of 3 characters
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>
+          <span>Departure date</span>
+          <input type="text" formControlName="dateOfDeparture" [placeholder]="datetimePlaceholder" />
+        </label>
+        <div class="error" *ngIf="flightFG.get('dateOfDeparture').hasError('required') && flightFG.get('dateOfDeparture').touched">
+          Departure date is required
+        </div>
+        <div class="error" *ngIf="flightFG.get('dateOfDeparture').hasError('validateDateTime') && flightFG.get('dateOfDeparture').touched">
+          Departure date format wrong
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>
+          <span>Seats</span>
+          <input type="number" formControlName="seats">
+        </label>
+        <div class="error" *ngIf="flightFG.get('seats').hasError('required') && flightFG.get('seats').touched">
+          Seats are required
+        </div>
+        <div class="error" *ngIf="flightFG.get('seats').hasError('pattern') && flightFG.get('seats').touched">
+          Minimum one seat
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>
+          <span>From</span>
+          <select formControlName="from" >
+            <option *ngFor="let d of _destinations" [ngValue]="d.id">{{d.name}}</option>
+          </select>
+        </label>
+        <div class="error" *ngIf="flightFG.get('from').hasError('required') && flightFG.get('from').touched">
+          From is required
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>
+          <span>To</span>
+          <select formControlName="to" >
+            <option *ngFor="let d of _destinations" [ngValue]="d.id">{{d.name}}</option>
+          </select>
+        </label>
+        <div class="error" *ngIf="flightFG.get('to').hasError('required') && flightFG.get('to').touched">
+          To is required
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <button *ngIf="authService.isAdmin" type="submit" [disabled]="flightFG.invalid">Save</button>
+        <button *ngIf="detail && authService.isAdmin" type="button" (click)="remove()">Delete</button>
+        <button *ngIf="detail" type="button" (click)="back()">Back</button>
+      </td>
+    <tr>
+  </table>
+</form>

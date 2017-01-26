@@ -38,6 +38,17 @@ li {
   margin-top: 4px;
 }
 
+/* forms */
+
+:disabled {
+  background-color: #8f8f8f;
+}
+
+.error {
+  color: red;
+  font-size: 0.8em;
+}
+
 input {
   border: 1px solid #106cc8;
   font-size: 14px;
@@ -60,4 +71,34 @@ button {
 
 button:hover {
   background-color: #28739e;
+}
+
+input:disabled {
+  background-color: #e1e1e1 !important;
+}
+
+/* lists */
+
+.asc:after {
+  content: " \25b2";
+}
+
+.desc:after {
+  content: " \25bc";
+}
+
+.cross:before {
+  content: "\2716  ";
+}
+
+table.list tr {
+  cursor: pointer;
+}
+
+table.list tr:not(:first-child):hover {
+  background-color: #bbb;
+}
+
+table.list tr:nth-child(odd) {
+  background-color: #efefef;
 }

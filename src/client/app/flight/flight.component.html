@@ -1,0 +1,33 @@
+<div *ngIf="authService.isAdmin">
+
+  <h2>Add flight</h2>
+
+  <flight-form
+    [flight]="selectedFlight"
+    [destinations]="destinations"
+    (onFlightChange)="addFlight($event)">
+  </flight-form>
+
+</div>
+
+<h2>Flight list</h2>
+
+<departure-filter
+  (onDepartureFilterChange)="applyFilter($event)">
+</departure-filter>
+
+<aos-pagination
+  [recordCount]="recordCount"
+  (onPaginationChange)="paginationChanged($event)">
+</aos-pagination>
+
+<flight-list
+  [flights]="flights"
+  [nameSortClass]="(getSortClass(nameField) | async)?.sort?.order"
+  [departureSortClass]="(getSortClass(departureField) | async)?.sort?.order"
+  [filterClass]="getFilterClass()"
+  (onFlightSelected)="selectFlight($event)"
+  (onChangeNameSort)="changeSort(nameField)"
+  (onChangeDepartureSort)="changeSort(departureField)"
+>
+</flight-list>

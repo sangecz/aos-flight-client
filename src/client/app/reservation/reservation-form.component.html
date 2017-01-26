@@ -1,0 +1,60 @@
+<form novalidate (ngSubmit)="onSubmit()" [formGroup]="reservationFG">
+
+  <table>
+
+    <tr>
+      <td>
+        <label>
+          <span>Flight</span>
+          <select formControlName="flight" >
+            <option *ngFor="let f of _flights" [ngValue]="f.id">{{f.name}}</option>
+          </select>
+        </label>
+        <div class="error" *ngIf="reservationFG.get('flight').hasError('required') && reservationFG.get('flight').touched">
+          Flight is required
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>
+          <span>Seats</span>
+          <input type="number" formControlName="seats">
+        </label>
+        <div class="error" *ngIf="reservationFG.get('seats').hasError('required') && reservationFG.get('seats').touched">
+          Seats are required
+        </div>
+        <div class="error" *ngIf="reservationFG.get('seats').hasError('pattern') && reservationFG.get('seats').touched">
+          Minimum one seat
+        </div>
+      </td>
+    </tr>
+
+    <tr *ngIf="detail">
+      <td>
+        <label>
+          <span>Created</span>
+          <input type="text" formControlName="created">
+        </label>
+      </td>
+    </tr>
+
+    <tr *ngIf="detail">
+      <td>
+        <label>
+          <span>State</span>
+          <input type="text" formControlName="state">
+        </label>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <button *ngIf="showSubmitBtn()" type="submit" [disabled]="reservationFG.invalid">{{submitTxt}}</button>
+        <button *ngIf="showDeleteBtn()" type="button" (click)="remove()">Delete</button>
+        <button *ngIf="detail" type="button" (click)="back()">Back</button>
+      </td>
+    <tr>
+  </table>
+</form>

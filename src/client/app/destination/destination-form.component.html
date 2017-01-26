@@ -1,0 +1,27 @@
+<form novalidate (ngSubmit)="onSubmit()" [formGroup]="destinationFG">
+
+  <table>
+    <tr>
+      <td>
+        <label>
+          <span>Name</span>
+          <input type="text" formControlName="name">
+        </label>
+        <div class="error" *ngIf="destinationFG.get('name').hasError('required') && destinationFG.get('name').touched">
+          Name is required
+        </div>
+        <div class="error" *ngIf="destinationFG.get('name').hasError('minlength') && destinationFG.get('name').touched">
+          Minimum of 3 characters
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <button *ngIf="authService.isAdmin" type="submit" [disabled]="destinationFG.invalid">Save</button>
+        <button *ngIf="detail && authService.isAdmin" type="button" (click)="remove()">Delete</button>
+        <button *ngIf="detail" type="button" (click)="back()">Back</button>
+      </td>
+    <tr>
+  </table>
+</form>
